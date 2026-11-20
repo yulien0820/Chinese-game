@@ -46,7 +46,7 @@
 </head>
 <body class="pb-12">
 
-  <audio id="tts-audio-player" playsinline referrerpolicy="no-referrer" style="display:none;"></audio>
+  <audio id="tts-audio-player" playsinline preload="auto" style="display:none;"></audio>
 
   <!-- 頂部卡片區 -->
   <div class="max-w-4xl mx-auto px-3 sm:px-5 pt-3">
@@ -573,10 +573,11 @@
     let dictEarnedStars = 0;
 
     // =========================================================
-    // 3. 雙軌即時發聲引擎（iPadOS 內建台灣女聲 ＋ 雲端語音備援 ＋ 強化版 Web Audio 音效）
+    // 3. iPadOS 繞過靜音開關媒體通道 ＋ 同步直連台灣女聲語音引擎
     // =========================================================
     let audioCtx = null;
     let speechSeq = 0;
+    let mediaChannelUnlocked = false;
     let cachedTwVoice = null;
 
     function pickBestTwVoice() {
@@ -597,7 +598,8 @@
       pickBestTwVoice();
     }
 
-    function ensureAudioUnlocked() {
+    // 在使用者點擊當下同步解鎖 iPadOS 媒體音訊通道（HTML5 Audio 走媒體音量，不受側邊/控制中心鈴鐺靜音開關影響）
+    function unlockMediaChannelSync() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (AC) {
@@ -612,45 +614,72 @@
           src.start(0);
         }
       } catch (e) {}
+
+      if (!mediaChannelUnlocked) {
+        mediaChannelUnlocked = true;
+        try {
+          const player = document.getElementById("tts-audio-player");
+          if (player) {
+            player.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+            player.volume = 0.01;
+            const p = player.play();
+            if (p && typeof p.then === "function") {
+              p.then(function () {
+                player.pause();
+                player.volume = 1.0;
+              }).catch(function () {
+                player.volume = 1.0;
+              });
+            }
+          }
+        } catch (e) {}
+      }
     }
 
     ["touchstart", "pointerdown", "click"].forEach(function (evName) {
-      document.addEventListener(evName, ensureAudioUnlocked, { passive: true });
+      document.addEventListener(evName, unlockMediaChannelSync, { passive: true });
     });
 
     function playMagicSfx(type) {
       try {
-        ensureAudioUnlocked();
+        unlockMediaChannelSync();
         if (!audioCtx) return;
-        const t = audioCtx.currentTime;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        if (type === "win") {
-          osc.type = "triangle";
-          osc.frequency.setValueAtTime(523.25, t);
-          osc.frequency.setValueAtTime(659.25, t + 0.08);
-          osc.frequency.setValueAtTime(783.99, t + 0.16);
-          gain.gain.setValueAtTime(0.35, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
-          osc.start(t);
-          osc.stop(t + 0.46);
-        } else if (type === "err") {
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(220, t);
-          osc.frequency.linearRampToValueAtTime(150, t + 0.22);
-          gain.gain.setValueAtTime(0.3, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
-          osc.start(t);
-          osc.stop(t + 0.25);
+        const startPlay = function () {
+          const t = audioCtx.currentTime + 0.01;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          if (type === "win") {
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(523.25, t);
+            osc.frequency.setValueAtTime(659.25, t + 0.09);
+            osc.frequency.setValueAtTime(783.99, t + 0.18);
+            gain.gain.setValueAtTime(0.45, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.48);
+            osc.start(t);
+            osc.stop(t + 0.5);
+          } else if (type === "err") {
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(220, t);
+            osc.frequency.linearRampToValueAtTime(150, t + 0.22);
+            gain.gain.setValueAtTime(0.38, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+            osc.start(t);
+            osc.stop(t + 0.26);
+          } else {
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(760, t);
+            gain.gain.setValueAtTime(0.3, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+            osc.start(t);
+            osc.stop(t + 0.14);
+          }
+        };
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume().then(startPlay);
         } else {
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(740, t);
-          gain.gain.setValueAtTime(0.22, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-          osc.start(t);
-          osc.stop(t + 0.13);
+          startPlay();
         }
       } catch (e) {}
     }
@@ -677,37 +706,62 @@
       for (let i = 0; i < parts.length; i++) {
         const p = parts[i];
         if (!p) continue;
-        if ((cur + p).length <= 58) cur += p;
+        if ((cur + p).length <= 55) cur += p;
         else {
           if (cur.trim()) out.push(cur.trim());
           cur = p;
         }
       }
       if (cur.trim()) out.push(cur.trim());
-      return out.length ? out : [s.slice(0, 58)];
+      return out.length ? out : [s.slice(0, 55)];
     }
 
-    function playCloudBackupVoice(text, rate, seq, onFinish) {
-      if (seq !== speechSeq) return;
+    function playSystemTtsFallback(text, rate, seq, onFinish) {
+      if (seq !== speechSeq || !("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.resume();
+        const voice = cachedTwVoice || pickBestTwVoice();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "zh-TW";
+        if (voice) u.voice = voice;
+        u.rate = typeof rate === "number" ? rate : 0.9;
+        u.pitch = 1.1;
+        u.volume = 1.0;
+        u.onend = function () { if (seq === speechSeq && onFinish) onFinish(); };
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+
+    // 直接在點擊事件當下同步啟動 HTML5 <audio> 串流女聲（與 YouTube 影片走同一條媒體音訊通道）
+    function speakSister(text, rate, onFinish) {
+      if (!text) return;
+      stopSpeech();
+      const seq = speechSeq;
       const chunks = chunkText(text);
-      if (!chunks.length) { if (onFinish) onFinish(); return; }
       const audio = document.getElementById("tts-audio-player");
-      if (!audio) return;
-      const playRate = typeof rate === "number" ? Math.max(0.78, Math.min(1.15, rate + 0.06)) : 0.96;
+      if (!audio || !chunks.length) {
+        playSystemTtsFallback(text, rate, seq, onFinish);
+        return;
+      }
+
+      const playRate = typeof rate === "number" ? Math.max(0.8, Math.min(1.15, rate + 0.05)) : 0.95;
 
       function playIdx(i) {
         if (seq !== speechSeq) return;
         if (i >= chunks.length) { if (onFinish) onFinish(); return; }
         const q = chunks[i];
         const urls = [
-          "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(q),
-          "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(q) + "&le=zh"
+          "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(q) + "&le=zh",
+          "https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&tl=zh-TW&q=" + encodeURIComponent(q)
         ];
         let uIdx = 0;
 
         function tryNext() {
           if (seq !== speechSeq) return;
-          if (uIdx >= urls.length) { playIdx(i + 1); return; }
+          if (uIdx >= urls.length) {
+            playSystemTtsFallback(q, rate, seq, function () { playIdx(i + 1); });
+            return;
+          }
           const srcUrl = urls[uIdx++];
           audio.onended = function () { if (seq === speechSeq) playIdx(i + 1); };
           audio.onerror = function () { if (seq === speechSeq) tryNext(); };
@@ -717,54 +771,17 @@
           const prom = audio.play();
           if (prom && typeof prom.catch === "function") {
             prom.catch(function () {
-              if (seq === speechSeq && uIdx < urls.length) tryNext();
+              if (seq === speechSeq) {
+                if (uIdx < urls.length) tryNext();
+                else playSystemTtsFallback(q, rate, seq, function () { playIdx(i + 1); });
+              }
             });
           }
         }
         tryNext();
       }
+
       playIdx(0);
-    }
-
-    function speakSister(text, rate, onFinish) {
-      if (!text) return;
-      ensureAudioUnlocked();
-      stopSpeech();
-      const seq = speechSeq;
-
-      if ("speechSynthesis" in window) {
-        try {
-          window.speechSynthesis.resume();
-          const voice = cachedTwVoice || pickBestTwVoice();
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = "zh-TW";
-          if (voice) u.voice = voice;
-          u.rate = typeof rate === "number" ? rate : 0.9;
-          u.pitch = 1.12;
-          u.volume = 1.0;
-
-          let started = false;
-          u.onstart = function () { started = true; };
-          u.onend = function () { if (seq === speechSeq && onFinish) onFinish(); };
-          u.onerror = function () {
-            if (seq === speechSeq && !started) {
-              playCloudBackupVoice(text, rate, seq, onFinish);
-            }
-          };
-
-          window.speechSynthesis.speak(u);
-
-          setTimeout(function () {
-            if (seq === speechSeq && !started) {
-              try { window.speechSynthesis.cancel(); } catch (e) {}
-              playCloudBackupVoice(text, rate, seq, onFinish);
-            }
-          }, 450);
-          return;
-        } catch (e) {}
-      }
-
-      playCloudBackupVoice(text, rate, seq, onFinish);
     }
 
     function testSisterVoice() {
