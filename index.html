@@ -46,7 +46,7 @@
 </head>
 <body class="pb-12">
 
-  <audio id="tts-audio-player" playsinline preload="auto" style="display:none;"></audio>
+  <audio id="tts-audio-player" playsinline referrerpolicy="no-referrer" preload="auto" style="display:none;"></audio>
 
   <!-- 頂部卡片區 -->
   <div class="max-w-4xl mx-auto px-3 sm:px-5 pt-3">
@@ -573,11 +573,10 @@
     let dictEarnedStars = 0;
 
     // =========================================================
-    // 3. iPadOS 繞過靜音開關媒體通道 ＋ 同步直連台灣女聲語音引擎
+    // 3. 台灣女聲雙軌直連引擎（優先系統台灣女聲 ＋ 免 Referrer 雲端語音備援）
     // =========================================================
     let audioCtx = null;
     let speechSeq = 0;
-    let mediaChannelUnlocked = false;
     let cachedTwVoice = null;
 
     function pickBestTwVoice() {
@@ -598,7 +597,6 @@
       pickBestTwVoice();
     }
 
-    // 在使用者點擊當下同步解鎖 iPadOS 媒體音訊通道（HTML5 Audio 走媒體音量，不受側邊/控制中心鈴鐺靜音開關影響）
     function unlockMediaChannelSync() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -614,26 +612,6 @@
           src.start(0);
         }
       } catch (e) {}
-
-      if (!mediaChannelUnlocked) {
-        mediaChannelUnlocked = true;
-        try {
-          const player = document.getElementById("tts-audio-player");
-          if (player) {
-            player.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-            player.volume = 0.01;
-            const p = player.play();
-            if (p && typeof p.then === "function") {
-              p.then(function () {
-                player.pause();
-                player.volume = 1.0;
-              }).catch(function () {
-                player.volume = 1.0;
-              });
-            }
-          }
-        } catch (e) {}
-      }
     }
 
     ["touchstart", "pointerdown", "click"].forEach(function (evName) {
@@ -716,34 +694,11 @@
       return out.length ? out : [s.slice(0, 55)];
     }
 
-    function playSystemTtsFallback(text, rate, seq, onFinish) {
-      if (seq !== speechSeq || !("speechSynthesis" in window)) return;
-      try {
-        window.speechSynthesis.resume();
-        const voice = cachedTwVoice || pickBestTwVoice();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = "zh-TW";
-        if (voice) u.voice = voice;
-        u.rate = typeof rate === "number" ? rate : 0.9;
-        u.pitch = 1.1;
-        u.volume = 1.0;
-        u.onend = function () { if (seq === speechSeq && onFinish) onFinish(); };
-        window.speechSynthesis.speak(u);
-      } catch (e) {}
-    }
-
-    // 直接在點擊事件當下同步啟動 HTML5 <audio> 串流女聲（與 YouTube 影片走同一條媒體音訊通道）
-    function speakSister(text, rate, onFinish) {
-      if (!text) return;
-      stopSpeech();
-      const seq = speechSeq;
+    function playCloudAudioBackup(text, rate, seq, onFinish) {
+      if (seq !== speechSeq) return;
       const chunks = chunkText(text);
       const audio = document.getElementById("tts-audio-player");
-      if (!audio || !chunks.length) {
-        playSystemTtsFallback(text, rate, seq, onFinish);
-        return;
-      }
-
+      if (!audio || !chunks.length) { if (onFinish) onFinish(); return; }
       const playRate = typeof rate === "number" ? Math.max(0.8, Math.min(1.15, rate + 0.05)) : 0.95;
 
       function playIdx(i) {
@@ -751,17 +706,14 @@
         if (i >= chunks.length) { if (onFinish) onFinish(); return; }
         const q = chunks[i];
         const urls = [
-          "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(q) + "&le=zh",
-          "https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&tl=zh-TW&q=" + encodeURIComponent(q)
+          "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(q),
+          "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(q) + "&le=zh"
         ];
         let uIdx = 0;
 
         function tryNext() {
           if (seq !== speechSeq) return;
-          if (uIdx >= urls.length) {
-            playSystemTtsFallback(q, rate, seq, function () { playIdx(i + 1); });
-            return;
-          }
+          if (uIdx >= urls.length) { playIdx(i + 1); return; }
           const srcUrl = urls[uIdx++];
           audio.onended = function () { if (seq === speechSeq) playIdx(i + 1); };
           audio.onerror = function () { if (seq === speechSeq) tryNext(); };
@@ -771,17 +723,54 @@
           const prom = audio.play();
           if (prom && typeof prom.catch === "function") {
             prom.catch(function () {
-              if (seq === speechSeq) {
-                if (uIdx < urls.length) tryNext();
-                else playSystemTtsFallback(q, rate, seq, function () { playIdx(i + 1); });
-              }
+              if (seq === speechSeq && uIdx < urls.length) tryNext();
             });
           }
         }
         tryNext();
       }
-
       playIdx(0);
+    }
+
+    // 優先在點擊同步瞬間啟動系統台灣女聲，400ms 內未啟動則自動無縫切換免 Referrer 雲端語音
+    function speakSister(text, rate, onFinish) {
+      if (!text) return;
+      stopSpeech();
+      const seq = speechSeq;
+
+      if ("speechSynthesis" in window) {
+        try {
+          window.speechSynthesis.resume();
+          const voice = cachedTwVoice || pickBestTwVoice();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = "zh-TW";
+          if (voice) u.voice = voice;
+          u.rate = typeof rate === "number" ? rate : 0.9;
+          u.pitch = 1.1;
+          u.volume = 1.0;
+
+          let started = false;
+          u.onstart = function () { started = true; };
+          u.onend = function () { if (seq === speechSeq && onFinish) onFinish(); };
+          u.onerror = function () {
+            if (seq === speechSeq && !started) {
+              playCloudAudioBackup(text, rate, seq, onFinish);
+            }
+          };
+
+          window.speechSynthesis.speak(u);
+
+          setTimeout(function () {
+            if (seq === speechSeq && !started) {
+              try { window.speechSynthesis.cancel(); } catch (e) {}
+              playCloudAudioBackup(text, rate, seq, onFinish);
+            }
+          }, 400);
+          return;
+        } catch (e) {}
+      }
+
+      playCloudAudioBackup(text, rate, seq, onFinish);
     }
 
     function testSisterVoice() {
