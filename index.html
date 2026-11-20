@@ -573,11 +573,14 @@
     let dictEarnedStars = 0;
 
     // =========================================================
-    // 3. 台灣女聲雙軌直連引擎（優先系統台灣女聲 ＋ 免 Referrer 雲端語音備援）
+    // 3. 全裝置零靜音音效與台灣女聲朗讀引擎（特效音 ＋ 國字/造詞/題目/鼓勵人聲）
     // =========================================================
     let audioCtx = null;
     let speechSeq = 0;
+    let mediaUnlocked = false;
     let cachedTwVoice = null;
+
+    const SILENT_WAV = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
 
     function pickBestTwVoice() {
       if (!("speechSynthesis" in window)) return null;
@@ -597,7 +600,7 @@
       pickBestTwVoice();
     }
 
-    function unlockMediaChannelSync() {
+    function unlockAudioHardware() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (AC) {
@@ -612,52 +615,76 @@
           src.start(0);
         }
       } catch (e) {}
+
+      if (!mediaUnlocked) {
+        mediaUnlocked = true;
+        try {
+          const player = document.getElementById("tts-audio-player");
+          if (player) {
+            player.src = SILENT_WAV;
+            player.volume = 0.01;
+            const p = player.play();
+            if (p && typeof p.then === "function") {
+              p.then(function () {
+                player.pause();
+                player.volume = 1.0;
+              }).catch(function () {
+                player.volume = 1.0;
+              });
+            }
+          }
+        } catch (e) {}
+      }
     }
 
     ["touchstart", "pointerdown", "click"].forEach(function (evName) {
-      document.addEventListener(evName, unlockMediaChannelSync, { passive: true });
+      document.addEventListener(evName, unlockAudioHardware, { passive: true });
     });
 
+    // 特效音：按鈕點擊（tap）、寫對一筆/完成/答對（win）、筆順寫錯/答錯（err）
     function playMagicSfx(type) {
       try {
-        unlockMediaChannelSync();
+        unlockAudioHardware();
         if (!audioCtx) return;
-        const startPlay = function () {
-          const t = audioCtx.currentTime + 0.01;
+        const runSynth = function () {
+          const now = audioCtx.currentTime;
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.connect(gain);
           gain.connect(audioCtx.destination);
+
           if (type === "win") {
             osc.type = "triangle";
-            osc.frequency.setValueAtTime(523.25, t);
-            osc.frequency.setValueAtTime(659.25, t + 0.09);
-            osc.frequency.setValueAtTime(783.99, t + 0.18);
-            gain.gain.setValueAtTime(0.45, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.48);
-            osc.start(t);
-            osc.stop(t + 0.5);
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.08);
+            osc.frequency.setValueAtTime(783.99, now + 0.16);
+            osc.frequency.setValueAtTime(1046.5, now + 0.24);
+            gain.gain.setValueAtTime(0.45, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.52);
           } else if (type === "err") {
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(220, t);
-            osc.frequency.linearRampToValueAtTime(150, t + 0.22);
-            gain.gain.setValueAtTime(0.38, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-            osc.start(t);
-            osc.stop(t + 0.26);
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(230, now);
+            osc.frequency.linearRampToValueAtTime(145, now + 0.22);
+            gain.gain.setValueAtTime(0.32, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            osc.start(now);
+            osc.stop(now + 0.26);
           } else {
             osc.type = "sine";
-            osc.frequency.setValueAtTime(760, t);
-            gain.gain.setValueAtTime(0.3, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
-            osc.start(t);
-            osc.stop(t + 0.14);
+            osc.frequency.setValueAtTime(784, now);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+            osc.start(now);
+            osc.stop(now + 0.15);
           }
         };
+
         if (audioCtx.state === "suspended") {
-          audioCtx.resume().then(startPlay);
+          audioCtx.resume().then(runSynth).catch(runSynth);
         } else {
-          startPlay();
+          runSynth();
         }
       } catch (e) {}
     }
@@ -694,88 +721,88 @@
       return out.length ? out : [s.slice(0, 55)];
     }
 
-    function playCloudAudioBackup(text, rate, seq, onFinish) {
-      if (seq !== speechSeq) return;
+    function fallbackSystemSpeech(text, rate, seq, onFinish) {
+      if (seq !== speechSeq || !("speechSynthesis" in window)) {
+        if (typeof onFinish === "function") onFinish();
+        return;
+      }
+      try {
+        window.speechSynthesis.resume();
+        const voice = cachedTwVoice || pickBestTwVoice();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "zh-TW";
+        if (voice) u.voice = voice;
+        u.rate = typeof rate === "number" ? rate : 0.9;
+        u.pitch = 1.12;
+        u.volume = 1.0;
+        u.onend = function () { if (seq === speechSeq && typeof onFinish === "function") onFinish(); };
+        u.onerror = function () { if (seq === speechSeq && typeof onFinish === "function") onFinish(); };
+        window.speechSynthesis.speak(u);
+      } catch (e) {
+        if (typeof onFinish === "function") onFinish();
+      }
+    }
+
+    // 人聲朗讀：在點擊當下同步啟動 HTML5 <audio> 播放台灣國語女聲（唸國字＋造詞、點餐/找字/聽寫題目、過關與進化鼓勵）
+    function speakSister(text, rate, onFinish) {
+      if (!text) return;
+      unlockAudioHardware();
+      stopSpeech();
+      const seq = speechSeq;
       const chunks = chunkText(text);
       const audio = document.getElementById("tts-audio-player");
-      if (!audio || !chunks.length) { if (onFinish) onFinish(); return; }
+      if (!audio || !chunks.length) {
+        fallbackSystemSpeech(text, rate, seq, onFinish);
+        return;
+      }
+
       const playRate = typeof rate === "number" ? Math.max(0.8, Math.min(1.15, rate + 0.05)) : 0.95;
 
       function playIdx(i) {
         if (seq !== speechSeq) return;
-        if (i >= chunks.length) { if (onFinish) onFinish(); return; }
+        if (i >= chunks.length) {
+          if (typeof onFinish === "function") onFinish();
+          return;
+        }
         const q = chunks[i];
-        const urls = [
+        const endpoints = [
           "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(q),
           "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(q) + "&le=zh"
         ];
-        let uIdx = 0;
+        let epIdx = 0;
 
-        function tryNext() {
+        function tryEndpoint() {
           if (seq !== speechSeq) return;
-          if (uIdx >= urls.length) { playIdx(i + 1); return; }
-          const srcUrl = urls[uIdx++];
+          if (epIdx >= endpoints.length) {
+            fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
+            return;
+          }
+          const url = endpoints[epIdx++];
           audio.onended = function () { if (seq === speechSeq) playIdx(i + 1); };
-          audio.onerror = function () { if (seq === speechSeq) tryNext(); };
+          audio.onerror = function () { if (seq === speechSeq) tryEndpoint(); };
           audio.volume = 1.0;
-          audio.src = srcUrl;
+          audio.src = url;
           audio.playbackRate = playRate;
           const prom = audio.play();
           if (prom && typeof prom.catch === "function") {
             prom.catch(function () {
-              if (seq === speechSeq && uIdx < urls.length) tryNext();
+              if (seq === speechSeq) {
+                if (epIdx < endpoints.length) tryEndpoint();
+                else fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
+              }
             });
           }
         }
-        tryNext();
+
+        tryEndpoint();
       }
+
       playIdx(0);
-    }
-
-    // 優先在點擊同步瞬間啟動系統台灣女聲，400ms 內未啟動則自動無縫切換免 Referrer 雲端語音
-    function speakSister(text, rate, onFinish) {
-      if (!text) return;
-      stopSpeech();
-      const seq = speechSeq;
-
-      if ("speechSynthesis" in window) {
-        try {
-          window.speechSynthesis.resume();
-          const voice = cachedTwVoice || pickBestTwVoice();
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = "zh-TW";
-          if (voice) u.voice = voice;
-          u.rate = typeof rate === "number" ? rate : 0.9;
-          u.pitch = 1.1;
-          u.volume = 1.0;
-
-          let started = false;
-          u.onstart = function () { started = true; };
-          u.onend = function () { if (seq === speechSeq && onFinish) onFinish(); };
-          u.onerror = function () {
-            if (seq === speechSeq && !started) {
-              playCloudAudioBackup(text, rate, seq, onFinish);
-            }
-          };
-
-          window.speechSynthesis.speak(u);
-
-          setTimeout(function () {
-            if (seq === speechSeq && !started) {
-              try { window.speechSynthesis.cancel(); } catch (e) {}
-              playCloudAudioBackup(text, rate, seq, onFinish);
-            }
-          }, 400);
-          return;
-        } catch (e) {}
-      }
-
-      playCloudAudioBackup(text, rate, seq, onFinish);
     }
 
     function testSisterVoice() {
       playMagicSfx("win");
-      speakSister("你好呀！我們一起來學寫字吧！");
+      speakSister("你好呀！拍，拍拍手、拍球。我們一起來學寫字吧！");
       showToast("🔊 正在播放聲音...");
     }
 
