@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>🏰 國字魔法冒險島 - 康軒一上 · 第一課～第四課 (47字)</title>
+  <title>🏰 國字魔法冒險島 · 第一課～第四課 (47字)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -49,7 +49,7 @@
   <!-- 全局同步共用台灣女聲播放器（點擊當下同步啟動，iPadOS / LINE 瀏覽器零延遲發聲） -->
   <audio id="tts-audio-player" playsinline referrerpolicy="no-referrer" style="display:none;"></audio>
 
-  <!-- 頂部卡片區（完全還原截圖暖米黃卡片版面） -->
+  <!-- 頂部卡片區（暖米黃卡片版面） -->
   <div class="max-w-4xl mx-auto px-3 sm:px-5 pt-3">
     <div class="bg-[#fffef9] rounded-3xl p-4 sm:p-5 shadow-sm border border-amber-200/80">
       <!-- 第一列：Logo + 標題 + 右側試聽按鈕 -->
@@ -117,16 +117,13 @@
   <main id="home-view" class="max-w-4xl mx-auto px-3 sm:px-5 mt-5 hidden">
     <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-amber-200/70">
       <div class="text-center mb-5">
-        <span class="inline-block px-4 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-xs sm:text-sm font-black mb-2">
-          ✨ 學校標準標楷體描寫 ＋ 溫柔大姊姊陪讀 ✨
-        </span>
         <h2 class="text-xl sm:text-2xl font-black text-slate-800">今天要挑戰哪一課呢？</h2>
       </div>
       <div id="lesson-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </div>
   </main>
 
-  <!-- 課別練習主舞台（預設直接進入第一課《拍拍手》描紅畫面，與截圖完全一致） -->
+  <!-- 課別練習主舞台（預設直接進入第一課《拍拍手》描紅畫面） -->
   <main id="lesson-view" class="max-w-4xl mx-auto px-3 sm:px-5 mt-4 space-y-4">
     <!-- 課別切換橫條：換課別 ｜ 第一課《拍拍手》 ｜ 全部生字 -->
     <div class="bg-white rounded-2xl px-4 py-2.5 shadow-sm border border-amber-200/70 flex items-center justify-between gap-2">
@@ -158,7 +155,7 @@
       </button>
     </nav>
 
-    <!-- 關卡 1：魔法筆順（與截圖 100% 一致） -->
+    <!-- 關卡 1：魔法筆順 -->
     <section id="sec-write" class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-amber-200/70">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
         <span class="text-xs sm:text-sm font-black text-slate-700">👇 點選要練習的生字（學校標楷體）：</span>
@@ -439,12 +436,12 @@
   </div>
 
   <footer class="text-center text-xs font-bold text-slate-400 mt-8">
-    Created by Cinthya Sun ｜ 🏰 國字魔法冒險島（康軒一上 第一課～第四課）
+    Created by Cinthya Sun ｜ 🏰 國字魔法冒險島（第一課～第四課）
   </footer>
 
   <script>
     // =========================================================
-    // 1. 康軒一上 第一課～第四課 課本實拍逐字校對資料庫 (共 47 字)
+    // 1. 第一課～第四課 課本實拍逐字校對資料庫 (共 47 字)
     // =========================================================
     const LESSONS_DATA = [
       {
@@ -546,7 +543,7 @@
     // =========================================================
     // 2. 遊戲存檔與狀態管理
     // =========================================================
-    const SAVE_KEY = "hanzi_island_warm_v3";
+    const SAVE_KEY = "hanzi_island_warm_v4";
     let appState = {
       stars: 3,
       dinoLv: 1,
@@ -591,19 +588,40 @@
     let dictEarnedStars = 0;
 
     // =========================================================
-    // 3. 溫柔大姊姊真人語音引擎（iPadOS / LINE / 桌機全支援零延遲）
+    // 3. 溫柔大姊姊真人語音與特效音效引擎（iPadOS Safari 同步解鎖＋HTML5 音訊備援）
     // =========================================================
     let audioCtx = null;
     let speechSeq = 0;
     const isTouchOrMobile = /iPad|iPhone|iPod|Android|Line/i.test(navigator.userAgent || "") ||
                             (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-    function playMagicSfx(type) {
+    function ensureAudioUnlocked() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) return;
-        if (!audioCtx) audioCtx = new AC();
-        if (audioCtx.state === "suspended") audioCtx.resume();
+        if (AC) {
+          if (!audioCtx) audioCtx = new AC();
+          if (audioCtx.state === "suspended") {
+            audioCtx.resume();
+          }
+          // iOS Safari 強制在同步手勢中播放一個 0.01 秒無聲 buffer 解鎖硬體音效通道
+          const buf = audioCtx.createBuffer(1, 1, 22050);
+          const src = audioCtx.createBufferSource();
+          src.buffer = buf;
+          src.connect(audioCtx.destination);
+          src.start(0);
+        }
+      } catch (e) {}
+    }
+
+    // 首次任何觸控或點擊立刻解鎖 iPadOS Web Audio
+    ["touchstart", "pointerdown", "click"].forEach(function (evName) {
+      document.addEventListener(evName, ensureAudioUnlocked, { passive: true });
+    });
+
+    function playMagicSfx(type) {
+      try {
+        ensureAudioUnlocked();
+        if (!audioCtx) return;
         const t = audioCtx.currentTime;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
@@ -614,25 +632,25 @@
           osc.frequency.setValueAtTime(523.25, t);
           osc.frequency.setValueAtTime(659.25, t + 0.08);
           osc.frequency.setValueAtTime(783.99, t + 0.16);
-          gain.gain.setValueAtTime(0.15, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+          gain.gain.setValueAtTime(0.28, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
           osc.start(t);
-          osc.stop(t + 0.42);
+          osc.stop(t + 0.46);
         } else if (type === "err") {
           osc.type = "sine";
-          osc.frequency.setValueAtTime(210, t);
-          osc.frequency.linearRampToValueAtTime(155, t + 0.18);
-          gain.gain.setValueAtTime(0.12, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          osc.frequency.setValueAtTime(220, t);
+          osc.frequency.linearRampToValueAtTime(150, t + 0.22);
+          gain.gain.setValueAtTime(0.24, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
           osc.start(t);
-          osc.stop(t + 0.22);
+          osc.stop(t + 0.25);
         } else {
           osc.type = "sine";
-          osc.frequency.setValueAtTime(680, t);
-          gain.gain.setValueAtTime(0.07, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+          osc.frequency.setValueAtTime(720, t);
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
           osc.start(t);
-          osc.stop(t + 0.12);
+          osc.stop(t + 0.13);
         }
       } catch (e) {}
     }
@@ -737,9 +755,18 @@
 
     function speakSister(text, rate, onFinish) {
       if (!text) return;
+      ensureAudioUnlocked();
       stopSpeech();
       const seq = speechSeq;
+      // 行動裝置 / iPad / LINE 瀏覽器先同步啟動系統語音解鎖，並立即透過共用 <audio> 播放台灣國語女聲
       if (isTouchOrMobile) {
+        try {
+          if ("speechSynthesis" in window) {
+            const silent = new SpeechSynthesisUtterance("");
+            silent.volume = 0;
+            window.speechSynthesis.speak(silent);
+          }
+        } catch (e) {}
         playOnlineFemaleVoice(text, rate, seq, onFinish);
         return;
       }
@@ -769,8 +796,8 @@
 
     function testSisterVoice() {
       playMagicSfx("win");
-      speakSister("你好呀！我是陪你練寫字的大姊姊，我們一起加油吧！");
-      showToast("🔊 正在播放大姊姊人聲...");
+      speakSister("你好呀！我們一起來學寫字吧！");
+      showToast("🔊 正在播放人聲...");
     }
 
     function showToast(msg) {
@@ -879,7 +906,7 @@
       stopSpeech();
       document.getElementById("lesson-view").classList.add("hidden");
       document.getElementById("home-view").classList.remove("hidden");
-      document.getElementById("header-sub-info").textContent = "康軒一上 · 第一課～第四課 (47字)";
+      document.getElementById("header-sub-info").textContent = "第一課～第四課 (47字)";
       renderHomeLessons();
     }
 
