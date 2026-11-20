@@ -226,6 +226,8 @@
 </head>
 <body>
 
+  <audio id="tts-audio-player" playsinline referrerpolicy="no-referrer" style="display:none;"></audio>
+
   <div id="audio-welcome-modal">
     <div class="welcome-box">
       <div style="font-size:3.6rem; margin-bottom:8px;">🦖✨</div>
@@ -481,26 +483,13 @@
     let writer = null;
     let currentQuizTarget = null;
 
-    let selectedTwVoice = null;
+    // ==========================================
+    // 升級版：全裝置同步觸發台灣國語女聲語音引擎
+    // ==========================================
     let audioCtx = null;
-    let speechUnlocked = false;
     let currentSpeechToken = 0;
-    const isIOSOrLine = /iPad|iPhone|iPod|Line/i.test(navigator.userAgent || "") ||
-                        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    let preferCloudTTS = false;
-
-    function getSharedTtsAudio() {
-      let el = document.getElementById("tts-audio-player");
-      if (!el) {
-        el = document.createElement("audio");
-        el.id = "tts-audio-player";
-        el.setAttribute("playsinline", "");
-        el.setAttribute("referrerpolicy", "no-referrer");
-        el.style.display = "none";
-        document.body.appendChild(el);
-      }
-      return el;
-    }
+    const isMobileOrApple = /iPad|iPhone|iPod|Android|Line/i.test(navigator.userAgent || "") ||
+                            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
     function playTone(type) {
       try {
@@ -518,7 +507,7 @@
           osc.frequency.setValueAtTime(523.25, now);
           osc.frequency.setValueAtTime(659.25, now + 0.09);
           osc.frequency.setValueAtTime(783.99, now + 0.18);
-          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.setValueAtTime(0.16, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
           osc.start(now);
           osc.stop(now + 0.43);
@@ -526,14 +515,14 @@
           osc.type = "sine";
           osc.frequency.setValueAtTime(220, now);
           osc.frequency.linearRampToValueAtTime(160, now + 0.2);
-          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.setValueAtTime(0.12, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
           osc.start(now);
           osc.stop(now + 0.23);
         } else {
           osc.type = "sine";
           osc.frequency.setValueAtTime(660, now);
-          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.setValueAtTime(0.08, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
           osc.start(now);
           osc.stop(now + 0.13);
@@ -541,76 +530,16 @@
       } catch (e) {}
     }
 
-    function unlockAudioAndSpeech() {
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          if (!audioCtx) audioCtx = new AudioContextClass();
-          if (audioCtx.state === "suspended") audioCtx.resume();
-        }
-        if (!speechUnlocked) {
-          speechUnlocked = true;
-          try {
-            const sharedAudio = getSharedTtsAudio();
-            sharedAudio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-            sharedAudio.volume = 0.01;
-            const p = sharedAudio.play();
-            if (p && typeof p.then === "function") {
-              p.then(function () { sharedAudio.pause(); sharedAudio.volume = 1.0; })
-               .catch(function () { sharedAudio.volume = 1.0; });
-            }
-          } catch (e) {}
-          if ("speechSynthesis" in window) {
-            try {
-              window.speechSynthesis.resume();
-              const silentUtter = new SpeechSynthesisUtterance("");
-              silentUtter.volume = 0;
-              window.speechSynthesis.speak(silentUtter);
-            } catch (e) {}
-          }
-        }
-      } catch (err) {}
-    }
-
-    ["touchstart", "pointerdown", "click"].forEach(function (evt) {
-      document.addEventListener(evt, unlockAudioAndSpeech, { passive: true });
-    });
-
-    function startAdventureWithAudio() {
-      unlockAudioAndSpeech();
-      const modal = document.getElementById("audio-welcome-modal");
-      if (modal) modal.classList.add("hidden");
-      playTone("win");
-      speakText("歡迎來到國字魔法冒險島！快選一課開始吧！");
-      showToast("🔊 魔法聲音已開啟！");
-    }
-
-    function refreshSystemVoices() {
-      if (!("speechSynthesis" in window)) return;
-      const voices = window.speechSynthesis.getVoices() || [];
-      const preferred = ["Meijia", "美佳", "HsiaoChen", "HsiaoYu", "Yating", "Google 國語（臺灣）", "Microsoft HsiaoChen", "Ting-Ting"];
-      for (let i = 0; i < preferred.length; i++) {
-        const name = preferred[i];
-        const found = voices.find(function (v) { return v.name && v.name.indexOf(name) !== -1; });
-        if (found) { selectedTwVoice = found; return; }
-      }
-      selectedTwVoice = voices.find(function (v) { return v.lang && (v.lang.indexOf("zh-TW") !== -1 || v.lang.indexOf("zh_TW") !== -1); }) ||
-                        voices.find(function (v) { return v.lang && v.lang.indexOf("zh") !== -1; }) || null;
-    }
-
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.onvoiceschanged = refreshSystemVoices;
-      refreshSystemVoices();
-    }
-
     function stopAllSpeech() {
       currentSpeechToken += 1;
       try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
       try {
-        const sharedAudio = getSharedTtsAudio();
-        sharedAudio.onended = null;
-        sharedAudio.onerror = null;
-        sharedAudio.pause();
+        const player = document.getElementById("tts-audio-player");
+        if (player) {
+          player.onended = null;
+          player.onerror = null;
+          player.pause();
+        }
       } catch (e) {}
     }
 
@@ -623,22 +552,23 @@
       for (let i = 0; i < parts.length; i++) {
         const piece = parts[i];
         if (!piece) continue;
-        if ((buf + piece).length <= 65) buf += piece;
+        if ((buf + piece).length <= 60) buf += piece;
         else {
           if (buf.trim()) chunks.push(buf.trim());
           buf = piece;
         }
       }
       if (buf.trim()) chunks.push(buf.trim());
-      return chunks.length > 0 ? chunks : [raw.slice(0, 65)];
+      return chunks.length > 0 ? chunks : [raw.slice(0, 60)];
     }
 
-    function playFallbackOnlineTts(text, customRate, token, onDone) {
+    function playCloudTtsDirect(text, customRate, token, onDone) {
       if (token !== currentSpeechToken) return;
       const chunks = splitSpeechChunks(text);
       if (chunks.length === 0) { if (typeof onDone === "function") onDone(); return; }
       const rate = typeof customRate === "number" ? Math.max(0.75, Math.min(1.15, customRate + 0.08)) : 0.96;
-      const sharedAudio = getSharedTtsAudio();
+      const player = document.getElementById("tts-audio-player");
+      if (!player) return;
 
       function playChunkAt(i) {
         if (token !== currentSpeechToken) return;
@@ -649,21 +579,28 @@
           "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(chunk) + "&le=zh"
         ];
         let epIdx = 0;
+
         function tryEndpoint() {
           if (token !== currentSpeechToken) return;
-          if (epIdx >= endpoints.length) { playChunkAt(i + 1); return; }
+          if (epIdx >= endpoints.length) {
+            playChunkAt(i + 1);
+            return;
+          }
           const url = endpoints[epIdx++];
-          sharedAudio.onended = function () { if (token === currentSpeechToken) playChunkAt(i + 1); };
-          sharedAudio.onerror = function () { if (token === currentSpeechToken) tryEndpoint(); };
-          sharedAudio.volume = 1.0;
-          sharedAudio.src = url;
-          sharedAudio.playbackRate = rate;
-          const p = sharedAudio.play();
+          player.onended = function () { if (token === currentSpeechToken) playChunkAt(i + 1); };
+          player.onerror = function () { if (token === currentSpeechToken) tryEndpoint(); };
+          player.volume = 1.0;
+          player.src = url;
+          player.playbackRate = rate;
+          const p = player.play();
           if (p && typeof p.catch === "function") {
             p.catch(function () {
               if (token === currentSpeechToken) {
-                if (epIdx < endpoints.length) tryEndpoint();
-                else showToast("🔇 若沒聽到人聲，請確認 iPad 未開靜音並用 Safari 開啟喔！");
+                if (epIdx < endpoints.length) {
+                  tryEndpoint();
+                } else {
+                  trySystemSpeechFallback(text, customRate, token, onDone);
+                }
               }
             });
           }
@@ -673,62 +610,74 @@
       playChunkAt(0);
     }
 
+    function trySystemSpeechFallback(text, customRate, token, onDone) {
+      if (token !== currentSpeechToken || !("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.resume();
+        const voices = window.speechSynthesis.getVoices() || [];
+        const preferred = ["Meijia", "美佳", "HsiaoChen", "Google 國語（臺灣）", "Ting-Ting"];
+        let chosen = null;
+        for (let i = 0; i < preferred.length; i++) {
+          const f = voices.find(function (v) { return v.name && v.name.indexOf(preferred[i]) !== -1; });
+          if (f) { chosen = f; break; }
+        }
+        if (!chosen) {
+          chosen = voices.find(function (v) { return v.lang && v.lang.toLowerCase().indexOf("zh") !== -1; }) || null;
+        }
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "zh-TW";
+        if (chosen) utter.voice = chosen;
+        utter.rate = typeof customRate === "number" ? customRate : 0.88;
+        utter.pitch = 1.12;
+        utter.volume = 1.0;
+        utter.onend = function () { if (token === currentSpeechToken && typeof onDone === "function") onDone(); };
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+
     function speakText(text, customRate, onDone) {
       if (!text) return;
-      unlockAudioAndSpeech();
       stopAllSpeech();
       const token = currentSpeechToken;
-      const rate = typeof customRate === "number" ? customRate : 0.88;
-      const isLineBrowser = /Line/i.test(navigator.userAgent || "");
-
-      if (preferCloudTTS || isLineBrowser) {
-        playFallbackOnlineTts(text, rate, token, onDone);
-        return;
-      }
-
-      if ("speechSynthesis" in window) {
-        refreshSystemVoices();
-        const voices = window.speechSynthesis.getVoices() || [];
-        const hasTwVoice = !!selectedTwVoice || voices.some(function (v) { return v.lang && v.lang.toLowerCase().indexOf("zh") !== -1; });
-        if (hasTwVoice) {
+      // 在 iPad / iPhone / LINE / 行動裝置上，直接同步在點擊瞬間啟動共用 <audio> 播放台灣國語女聲，絕不延遲被攔截
+      if (isMobileOrApple) {
+        playCloudTtsDirect(text, customRate, token, onDone);
+      } else {
+        // 桌機瀏覽器優先用本地高品質語音，失敗自動轉雲端女聲
+        if ("speechSynthesis" in window) {
           try {
             window.speechSynthesis.resume();
             const utter = new SpeechSynthesisUtterance(text);
             utter.lang = "zh-TW";
-            if (selectedTwVoice) utter.voice = selectedTwVoice;
-            utter.rate = rate;
+            utter.rate = typeof customRate === "number" ? customRate : 0.88;
             utter.pitch = 1.12;
-            utter.volume = 1.0;
-
             let started = false;
             utter.onstart = function () { started = true; };
             utter.onend = function () { if (token === currentSpeechToken && typeof onDone === "function") onDone(); };
-            utter.onerror = function () {
-              if (token === currentSpeechToken && !started) {
-                if (isIOSOrLine) preferCloudTTS = true;
-                playFallbackOnlineTts(text, rate, token, onDone);
-              }
-            };
+            utter.onerror = function () { if (token === currentSpeechToken && !started) playCloudTtsDirect(text, customRate, token, onDone); };
             window.speechSynthesis.speak(utter);
-
             setTimeout(function () {
               if (token === currentSpeechToken && !started) {
-                if (isIOSOrLine) preferCloudTTS = true;
                 try { window.speechSynthesis.cancel(); } catch (e) {}
-                playFallbackOnlineTts(text, rate, token, onDone);
+                playCloudTtsDirect(text, customRate, token, onDone);
               }
-            }, 450);
+            }, 400);
             return;
-          } catch (err) {}
+          } catch (e) {}
         }
+        playCloudTtsDirect(text, customRate, token, onDone);
       }
+    }
 
-      if (isIOSOrLine) preferCloudTTS = true;
-      playFallbackOnlineTts(text, rate, token, onDone);
+    function startAdventureWithAudio() {
+      const modal = document.getElementById("audio-welcome-modal");
+      if (modal) modal.classList.add("hidden");
+      playTone("win");
+      speakText("歡迎來到國字魔法冒險島！快選一課開始吧！");
+      showToast("🔊 魔法聲音已開啟！");
     }
 
     function speakGreeting() {
-      unlockAudioAndSpeech();
       playTone("win");
       speakText("你好，歡迎來到國字魔法冒險島！我們一起來學寫字吧！");
       showToast("🌸 溫柔大姊姊陪你一起學寫字！");
