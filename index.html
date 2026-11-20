@@ -600,15 +600,25 @@
       pickBestTwVoice();
     }
 
-    // 音訊解鎖：只處理 Web Audio，不用靜音音檔佔用人聲播放器
     function unlockAudioHardware() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return;
         if (!audioCtx || audioCtx.state === "closed") audioCtx = new AC();
+
+        // iOS/iPadOS 需要在使用者操作當下實際啟動一個極短的 Web Audio source，
+        // 單純呼叫 resume() 有時不足以解鎖音效。
+        const buffer = audioCtx.createBuffer(1, 1, 22050);
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioCtx.destination);
+        source.start(0);
+
         if (audioCtx.state === "suspended") {
           const resumeResult = audioCtx.resume();
-          if (resumeResult && typeof resumeResult.catch === "function") resumeResult.catch(function () {});
+          if (resumeResult && typeof resumeResult.catch === "function") {
+            resumeResult.catch(function () {});
+          }
         }
       } catch (e) {}
     }
@@ -617,14 +627,12 @@
       document.addEventListener(evName, unlockAudioHardware, { passive: true });
     });
 
-    // 特效音使用獨立的 Web Audio Context，不與姐姐的人聲播放器共用
+    // 特效音：按鈕點擊（tap）、寫對一筆/完成/答對（win）、筆順寫錯/答錯（err）
     function playMagicSfx(type) {
       try {
         unlockAudioHardware();
-        if (!audioCtx || audioCtx.state === "closed") return;
-
+        if (!audioCtx) return;
         const runSynth = function () {
-          if (!audioCtx || audioCtx.state !== "running") return;
           const now = audioCtx.currentTime;
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -660,8 +668,8 @@
         };
 
         if (audioCtx.state === "suspended") {
-          audioCtx.resume().then(runSynth).catch(function () {});
-        } else if (audioCtx.state === "running") {
+          audioCtx.resume().then(runSynth).catch(runSynth);
+        } else {
           runSynth();
         }
       } catch (e) {}
@@ -756,28 +764,20 @@
             return;
           }
           const url = endpoints[epIdx++];
-          let failureHandled = false;
-          function handleFailure() {
-            if (failureHandled || seq !== speechSeq) return;
-            failureHandled = true;
-            audio.onended = null;
-            audio.onerror = null;
-            if (epIdx < endpoints.length) tryEndpoint();
-            else fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
-          }
-          audio.onended = function () {
-            if (seq === speechSeq) {
-              audio.onerror = null;
-              playIdx(i + 1);
-            }
-          };
-          audio.onerror = handleFailure;
+          audio.onended = function () { if (seq === speechSeq) playIdx(i + 1); };
+          audio.onerror = function () { if (seq === speechSeq) tryEndpoint(); };
           audio.volume = 1.0;
           audio.src = url;
           audio.playbackRate = playRate;
-          let prom;
-          try { prom = audio.play(); } catch (e) { handleFailure(); return; }
-          if (prom && typeof prom.catch === "function") prom.catch(handleFailure);
+          const prom = audio.play();
+          if (prom && typeof prom.catch === "function") {
+            prom.catch(function () {
+              if (seq === speechSeq) {
+                if (epIdx < endpoints.length) tryEndpoint();
+                else fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
+              }
+            });
+          }
         }
 
         tryEndpoint();
