@@ -16,7 +16,6 @@
       --success: #20c997;
       --text-main: #2d3436;
       --text-sub: #636e72;
-      --border-soft: #f1f3f5;
       --shadow-card: 0 10px 25px rgba(255, 107, 157, 0.12);
       --font-kai: "BiauKai", "DFKai-SB", "標楷體", "Kaiti TC", "STKaiti", serif;
       --font-ui: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -45,16 +44,10 @@
       max-width: 420px; width: 100%; text-align: center;
       box-shadow: 0 20px 50px rgba(0,0,0,0.25);
       border: 4px solid #ffe0ec;
-      animation: popIn 0.35s ease-out;
-    }
-    @keyframes popIn {
-      0% { transform: scale(0.88); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
     }
 
     header {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.94);
       border-bottom: 2px solid #ffe3ec;
       padding: 12px 16px;
       position: sticky; top: 0; z-index: 100;
@@ -66,7 +59,7 @@
     .top-stats { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .pill {
       background: #fff0f6; border: 1.5px solid #ffccd5; color: #c9184a;
-      padding: 5px 12px; border-radius: 999px; font-weight: 700; font-size: 0.85rem;
+      padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 0.85rem;
       display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
     }
     .pill.blue { background: #edf2ff; border-color: #bac8ff; color: #364fc7; }
@@ -98,9 +91,7 @@
       background: #fff; border-radius: 22px; padding: 18px;
       border: 2.5px solid #f1f3f5; box-shadow: 0 6px 18px rgba(0,0,0,0.04);
       cursor: pointer; transition: transform 0.15s, border-color 0.15s;
-      position: relative;
     }
-    .lesson-card:hover { transform: translateY(-2px); border-color: #ff8fa3; }
     .lesson-card.active { border-color: var(--primary); background: #fff9fb; }
     .lesson-badge {
       display: inline-block; padding: 3px 10px; border-radius: 999px;
@@ -123,7 +114,7 @@
       border: 2px solid #dee2e6; background: #fff;
       font-family: var(--font-kai); font-size: 1.45rem; font-weight: 700;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      cursor: pointer; position: relative; transition: all 0.15s;
+      cursor: pointer;
     }
     .char-chip.active {
       border-color: var(--primary); background: #fff0f6; color: var(--primary-dark);
@@ -152,9 +143,7 @@
       .mode-tabs { grid-template-columns: repeat(2, 1fr); }
     }
 
-    .board-wrap {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
+    .board-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; }
     #writer-box {
       width: 260px; height: 260px; border-radius: 22px;
       border: 4px solid #ff8fa3; background: #fffdfd;
@@ -168,9 +157,7 @@
         linear-gradient(to bottom, transparent 49.5%, rgba(255,143,163,0.35) 49.5%, rgba(255,143,163,0.35) 50.5%, transparent 50.5%);
     }
 
-    .info-panel {
-      background: #fff9fb; border-radius: 20px; padding: 18px; border: 2px solid #ffe3ec;
-    }
+    .info-panel { background: #fff9fb; border-radius: 20px; padding: 18px; border: 2px solid #ffe3ec; }
     .big-char-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
     .kai-display {
       font-family: var(--font-kai); font-size: 3.4rem; line-height: 1;
@@ -188,16 +175,13 @@
       padding: 6px 12px; border-radius: 12px; font-weight: 800; font-size: 0.95rem;
       cursor: pointer;
     }
-    .word-pill:hover { background: #edf2ff; }
 
     .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; justify-content: center; }
     .action-btn {
       border: none; border-radius: 14px; padding: 10px 16px;
       font-weight: 800; font-size: 0.95rem; cursor: pointer;
       display: inline-flex; align-items: center; gap: 6px;
-      transition: transform 0.1s;
     }
-    .action-btn:active { transform: scale(0.96); }
     .btn-pink { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(255,107,157,0.3); }
     .btn-blue { background: var(--secondary); color: #fff; box-shadow: 0 4px 12px rgba(92,124,250,0.28); }
     .btn-amber { background: var(--accent); color: #212529; }
@@ -211,9 +195,8 @@
     .quiz-opt {
       background: #fff; border: 3px solid #dee2e6; border-radius: 18px;
       padding: 16px; font-family: var(--font-kai); font-size: 2.2rem; font-weight: 700;
-      cursor: pointer; transition: all 0.15s;
+      cursor: pointer;
     }
-    .quiz-opt:hover { border-color: var(--secondary); background: #f8f9ff; }
     .quiz-opt.correct { border-color: var(--success); background: #e6fcf5; color: #087f5b; }
     .quiz-opt.wrong { border-color: #fa5252; background: #fff5f5; color: #c92a2a; }
 
@@ -251,7 +234,7 @@
         一上第一課～第四課（47 個生字完整收錄）<br/>
         點擊下方按鈕開啟溫柔大姊姊陪讀與魔法音效！
       </p>
-      <button type="button" id="btn-start-audio" class="action-btn btn-pink" style="width:100%; justify-content:center; font-size:1.1rem; padding:14px;">
+      <button type="button" class="action-btn btn-pink" style="width:100%; justify-content:center; font-size:1.1rem; padding:14px;" onclick="startAdventureWithAudio()">
         🚀 點擊開始魔法冒險（開啟聲音）
       </button>
     </div>
@@ -266,9 +249,9 @@
       </div>
     </div>
     <div class="top-stats">
-      <button type="button" class="pill" id="btn-greeting">🔊 試聽人聲</button>
-      <button type="button" class="pill gold" id="btn-checkin">📅 打卡 <span id="streak-count">1</span> 天</button>
-      <button type="button" class="pill blue" id="btn-hall">🏆 神龍殿 (<span id="graduated-count">0</span>)</button>
+      <button type="button" class="pill" onclick="speakGreeting()">🔊 試聽人聲</button>
+      <button type="button" class="pill gold" onclick="openCheckinModal()">📅 打卡 <span id="streak-count">1</span> 天</button>
+      <button type="button" class="pill blue" onclick="openDragonHallModal()">🏆 神龍殿 (<span id="graduated-count">0</span>)</button>
       <div class="pill gold">⭐ <span id="star-count">0</span></div>
     </div>
   </header>
@@ -284,8 +267,8 @@
         </div>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button type="button" class="action-btn btn-amber" id="btn-feed">🍎 餵食升級 (3⭐)</button>
-        <button type="button" class="action-btn btn-soft" id="btn-stampbook">🏅 生字集章冊</button>
+        <button type="button" class="action-btn btn-amber" onclick="feedDino()">🍎 餵食升級 (3⭐)</button>
+        <button type="button" class="action-btn btn-soft" onclick="openStampBookModal()">🏅 生字集章冊</button>
       </div>
     </div>
 
@@ -295,19 +278,19 @@
       <div class="char-selector" id="char-selector"></div>
 
       <div class="mode-tabs">
-        <button type="button" class="mode-btn active" id="tab-trace" data-mode="trace">✍️ 筆順描紅</button>
-        <button type="button" class="mode-btn" id="tab-blind" data-mode="blind">🌟 記憶盲寫</button>
-        <button type="button" class="mode-btn" id="tab-quiz" data-mode="quiz">🎯 聽音辨字</button>
-        <button type="button" class="mode-btn" id="tab-dictation" data-mode="dictation">👑 聽寫魔王</button>
+        <button type="button" class="mode-btn active" id="tab-trace" onclick="switchMode('trace')">✍️ 筆順描紅</button>
+        <button type="button" class="mode-btn" id="tab-blind" onclick="switchMode('blind')">🌟 記憶盲寫</button>
+        <button type="button" class="mode-btn" id="tab-quiz" onclick="switchMode('quiz')">🎯 聽音辨字</button>
+        <button type="button" class="mode-btn" id="tab-dictation" onclick="switchMode('dictation')">👑 聽寫魔王</button>
       </div>
 
       <div id="write-stage" class="practice-layout">
         <div class="board-wrap">
           <div id="writer-box"></div>
           <div class="btn-row">
-            <button type="button" class="action-btn btn-blue" id="btn-animate">🎬 筆順示範</button>
-            <button type="button" class="action-btn btn-soft" id="btn-reset">🔄 重寫</button>
-            <button type="button" class="action-btn btn-pink" id="btn-next">➡️ 下一個字</button>
+            <button type="button" class="action-btn btn-blue" onclick="animateStroke()">🎬 筆順示範</button>
+            <button type="button" class="action-btn btn-soft" onclick="resetWriter()">🔄 重寫</button>
+            <button type="button" class="action-btn btn-pink" onclick="nextChar()">➡️ 下一個字</button>
           </div>
           <p id="write-hint" style="margin:10px 0 0; font-weight:800; color:#e84e84; font-size:0.92rem; text-align:center;">
             跟著紅色筆順提示一筆一畫寫寫看！
@@ -323,7 +306,7 @@
               <div class="meta-line" id="info-tip" style="color:#d9480f; font-weight:700;">💡 寫字小幫手：左窄右寬，提手旁要挺直！</div>
             </div>
           </div>
-          <button type="button" class="action-btn btn-pink" style="width:100%; justify-content:center;" id="btn-speak-char">
+          <button type="button" class="action-btn btn-pink" style="width:100%; justify-content:center;" onclick="speakCurrentCharAndWords()">
             🔊 唸國字與造詞
           </button>
           <div style="margin-top:12px; font-weight:800; font-size:0.9rem; color:#495057;">點擊造詞聽發音：</div>
@@ -333,7 +316,7 @@
 
       <div id="quiz-stage" class="quiz-box" style="display:none;">
         <h3 style="margin:0 0 8px; color:#364fc7;">🎯 聽一聽，選出正確的國字！</h3>
-        <button type="button" class="action-btn btn-pink" id="btn-quiz-replay">🔊 再聽一次題目</button>
+        <button type="button" class="action-btn btn-pink" onclick="playQuizPrompt()">🔊 再聽一次題目</button>
         <p id="quiz-prompt-text" style="font-size:1.1rem; font-weight:800; margin:12px 0 4px;"></p>
         <div class="quiz-options" id="quiz-options"></div>
       </div>
@@ -344,765 +327,735 @@
     </footer>
   </div>
 
-  <div class="modal-backdrop" id="stamp-modal">
+  <div class="modal-backdrop" id="stamp-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-card">
       <h3 style="margin-top:0; color:#e84e84;">🏅 全冊 47 生字皇冠集章冊</h3>
       <p style="font-size:0.85rem; color:#636e72;">⭐ 初學描紅 ➔ 🌟 盲寫雙星 ➔ 👑 聽寫金皇冠</p>
       <div id="stamp-book-content"></div>
       <div style="text-align:right; margin-top:14px;">
-        <button type="button" class="action-btn btn-soft" id="btn-close-stamp">關閉</button>
+        <button type="button" class="action-btn btn-soft" onclick="document.getElementById('stamp-modal').classList.remove('open')">關閉</button>
       </div>
     </div>
   </div>
 
-  <div class="modal-backdrop" id="checkin-modal">
+  <div class="modal-backdrop" id="checkin-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-card" style="text-align:center;">
       <h3 style="margin-top:0; color:#d9480f;">📅 每日闖關打卡板</h3>
       <p style="font-size:0.9rem; color:#495057;">每天練寫國字自動蓋章，集滿 7 天額外獲得 +5 ⭐！</p>
       <div id="checkin-days" style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin:16px 0;"></div>
-      <button type="button" class="action-btn btn-soft" id="btn-close-checkin">太棒了</button>
+      <button type="button" class="action-btn btn-soft" onclick="document.getElementById('checkin-modal').classList.remove('open')">太棒了</button>
     </div>
   </div>
 
-  <div class="modal-backdrop" id="hall-modal">
+  <div class="modal-backdrop" id="hall-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-card" style="text-align:center;">
       <h3 style="margin-top:0; color:#364fc7;">🏆 榮譽神龍殿</h3>
       <p style="font-size:0.9rem; color:#495057;">把恐龍養到 Lv.12 宇宙守護聖龍王，就會榮耀畢業並領養新龍蛋！</p>
       <div id="hall-list" style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin:16px 0;"></div>
-      <button type="button" class="action-btn btn-soft" id="btn-close-hall">關閉</button>
+      <button type="button" class="action-btn btn-soft" onclick="document.getElementById('hall-modal').classList.remove('open')">關閉</button>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    (function () {
-      const LESSONS = [
-        {
-          id: 1,
-          title: "第一課〈拍拍手〉",
-          chars: [
-            { ch: "拍", zy: "ㄆㄞ", rad: "手部", strokes: 8, words: ["拍手", "拍拍手", "球拍"], tip: "提手旁第三筆是「提」，右邊白要寫正。" },
-            { ch: "手", zy: "ㄕㄡˇ", rad: "手部", strokes: 4, words: ["小手", "拍手", "右手"], tip: "第一筆是平撇，最後一筆豎鉤在正中央。" },
-            { ch: "左", zy: "ㄗㄨㄛˇ", rad: "工部", strokes: 5, words: ["左手", "左邊", "左右"], tip: "第一筆橫要長，下面「工」字要站穩。" },
-            { ch: "右", zy: "ㄧㄡˋ", rad: "口部", strokes: 5, words: ["右手", "右邊", "左右"], tip: "第一筆橫短、第二筆撇長，下面寫「口」。" },
-            { ch: "你", zy: "ㄋㄧˇ", rad: "人部", strokes: 7, words: ["你好", "你們", "你的"], tip: "左邊單人旁，右邊「尔」中間是豎鉤。" },
-            { ch: "他", zy: "ㄊㄚ", rad: "人部", strokes: 5, words: ["他們", "他的", "其他"], tip: "右邊「也」的豎彎鉤要圓潤有力。" },
-            { ch: "也", zy: "ㄧㄝˇ", rad: "乙部", strokes: 3, words: ["也是", "也好", "我也要"], tip: "第一筆橫折鉤斜度適中，最後豎彎鉤拉長。" },
-            { ch: "上", zy: "ㄕㄤˋ", rad: "一部", strokes: 3, words: ["上面", "上學", "上下"], tip: "先寫豎，再寫短橫，最後底橫要平穩。" },
-            { ch: "下", zy: "ㄒㄧㄚˋ", rad: "一部", strokes: 3, words: ["下面", "下課", "上下"], tip: "第一筆長橫在上方，中間豎要直，右邊一點。" }
-          ]
-        },
-        {
-          id: 2,
-          title: "第二課〈這是誰的〉",
-          chars: [
-            { ch: "這", zy: "ㄓㄜˋ", rad: "辵部", strokes: 11, words: ["這是", "這裡", "這個"], tip: "課本標準 11 畫！先寫「言」，最後寫辵部平捺。" },
-            { ch: "是", zy: "ㄕˋ", rad: "日部", strokes: 9, words: ["這是", "是的", "不是"], tip: "上面「日」寫得扁一點，最後平捺要舒展。" },
-            { ch: "誰", zy: "ㄕㄟˊ", rad: "言部", strokes: 15, words: ["是誰", "誰的", "誰來"], tip: "左邊言字旁，右邊「隹」四橫間距要相等。" },
-            { ch: "的", zy: "˙ㄉㄜ", rad: "白部", strokes: 8, words: ["我的", "你的", "誰的"], tip: "左邊「白」寫小一點，右邊「勺」裡面是一點。" },
-            { ch: "我", zy: "ㄨㄛˇ", rad: "戈部", strokes: 7, words: ["我們", "我的", "自我"], tip: "第五筆斜鉤要拉長，最後別忘記右上角一點。" },
-            { ch: "分", zy: "ㄈㄣ", rad: "刀部", strokes: 4, words: ["分享", "分開", "十分"], tip: "上面「八」撇低捺高，下面「刀」要置中。" },
-            { ch: "好", zy: "ㄏㄠˇ", rad: "女部", strokes: 6, words: ["你好", "好看", "好朋友"], tip: "左邊女字旁第三筆是提，右邊「子」橫畫要平。" },
-            { ch: "了", zy: "˙ㄌㄜ", rad: "亅部", strokes: 2, words: ["好了", "來了", "大了"], tip: "第一筆橫撇，第二筆彎鉤要垂直。" },
-            { ch: "啊", zy: "˙ㄚ", rad: "口部", strokes: 11, words: ["好啊", "是啊", "啊哈"], tip: "左邊口字旁靠上，中間耳朵旁，右邊是「可」。" },
-            { ch: "多", zy: "ㄉㄨㄛ", rad: "夕部", strokes: 6, words: ["多少", "很多", "多多"], tip: "上下兩個「夕」要對齊，下面比上面稍大。" },
-            { ch: "個", zy: "˙ㄍㄜ", rad: "人部", strokes: 10, words: ["一個", "個子", "這個"], tip: "左邊單人旁，右邊「固」外框要方正。" }
-          ]
-        },
-        {
-          id: 3,
-          title: "第三課〈秋千〉",
-          chars: [
-            { ch: "秋", zy: "ㄑㄧㄡ", rad: "禾部", strokes: 9, words: ["秋天", "秋千", "秋風"], tip: "左邊禾木旁最後一筆變點，右邊「火」撇捺舒展。" },
-            { ch: "千", zy: "ㄑㄧㄢ", rad: "十部", strokes: 3, words: ["秋千", "千萬", "一千"], tip: "第一筆是短平撇，第二筆橫要長，豎要直。" },
-            { ch: "和", zy: "ㄏㄜˊ", rad: "口部", strokes: 8, words: ["和平", "和你", "和好"], tip: "左邊禾木旁，右邊「口」字寫在中間偏下。" },
-            { ch: "玩", zy: "ㄨㄢˊ", rad: "玉部", strokes: 8, words: ["好玩", "玩耍", "玩具"], tip: "王字旁最後一筆變提，右邊「元」豎彎鉤要穩。" },
-            { ch: "陪", zy: "ㄆㄟˊ", rad: "阜部", strokes: 11, words: ["陪伴", "陪你", "陪我"], tip: "左邊耳朵旁，右邊「立」與「口」上下對齊。" },
-            { ch: "高", zy: "ㄍㄠ", rad: "高部", strokes: 10, words: ["高興", "高山", "很高"], tip: "點橫要平，上下兩個「口」要對齊。" },
-            { ch: "山", zy: "ㄕㄢ", rad: "山部", strokes: 3, words: ["高山", "山上", "火山"], tip: "中間豎畫最高，左右兩豎向內微傾。" },
-            { ch: "到", zy: "ㄉㄠˋ", rad: "刀部", strokes: 8, words: ["來到", "看到", "到達"], tip: "左邊「至」最後一橫變提，右邊立刀旁要直。" },
-            { ch: "大", zy: "ㄉㄚˋ", rad: "大部", strokes: 3, words: ["大人", "大小", "大個子"], tip: "橫畫平直，撇捺對稱打開。" },
-            { ch: "海", zy: "ㄏㄞˇ", rad: "水部", strokes: 10, words: ["大海", "海水", "海邊"], tip: "課本標準 10 畫！三點水旁，右邊「每」裡頭是兩點。" },
-            { ch: "朋", zy: "ㄆㄥˊ", rad: "月部", strokes: 8, words: ["朋友", "好朋友", "親朋"], tip: "左右兩個「月」字並排，要寫得瘦長對稱。" },
-            { ch: "友", zy: "ㄧㄡˇ", rad: "又部", strokes: 4, words: ["朋友", "友好", "好友"], tip: "第一筆橫、第二筆撇要長，下面「又」撇捺舒展。" },
-            { ch: "們", zy: "˙ㄇㄣ", rad: "人部", strokes: 10, words: ["我們", "你們", "他們"], tip: "單人旁靠左，右邊「門」字框要端正。" },
-            { ch: "起", zy: "ㄑㄧˇ", rad: "走部", strokes: 10, words: ["一起", "起來", "起立"], tip: "「走」的平捺要托住右邊的「己」，右邊己要封口。" }
-          ]
-        },
-        {
-          id: 4,
-          title: "第四課〈大個子，小個子〉",
-          chars: [
-            { ch: "蟲", zy: "ㄔㄨㄥˊ", rad: "虫部", strokes: 12, words: ["小蟲", "昆蟲", "毛毛蟲"], tip: "由兩個「虫」組成，上面的「虫」寫得扁一點。" },
-            { ch: "拉", zy: "ㄌㄚ", rad: "手部", strokes: 8, words: ["拉手", "拉開", "拉車"], tip: "左邊提手旁，右邊「立」的底橫要平穩。" },
-            { ch: "子", zy: "ㄗˇ", rad: "子部", strokes: 3, words: ["個子", "孩子", "葉子"], tip: "橫撇、彎鉤要連貫，最後一橫寫在中間偏上。" },
-            { ch: "開", zy: "ㄎㄞ", rad: "門部", strokes: 12, words: ["打開", "開心", "開門"], tip: "外面是「門」，裡面「开」兩橫要平、撇豎分明。" },
-            { ch: "看", zy: "ㄎㄢˋ", rad: "目部", strokes: 9, words: ["看見", "好看", "看書"], tip: "上面是「手」的變形，下面「目」要寫正。" },
-            { ch: "小", zy: "ㄒㄧㄠˇ", rad: "小部", strokes: 3, words: ["大小", "小個子", "小朋友"], tip: "先寫中間豎鉤，再寫左點、右點，左右對稱。" },
-            { ch: "心", zy: "ㄒㄧㄣ", rad: "心部", strokes: 4, words: ["開心", "小心", "愛心"], tip: "臥鉤要圓潤，三點位置高低錯落。" },
-            { ch: "我", zy: "ㄨㄛˇ", rad: "戈部", strokes: 7, words: ["我們", "自我", "我家"], tip: "斜鉤要挺拔有力，右上角點不能漏掉。" },
-            { ch: "記", zy: "ㄐㄧˋ", rad: "言部", strokes: 10, words: ["記得", "日記", "忘記"], tip: "左邊言字旁，右邊「己」豎彎鉤要圓潤。" },
-            { ch: "兩", zy: "ㄌㄧㄤˇ", rad: "入部", strokes: 8, words: ["兩個", "兩隻", "兩邊"], tip: "外框方正，裡面左右各一個「入」字。" },
-            { ch: "隻", zy: "ㄓ", rad: "隹部", strokes: 10, words: ["一隻", "兩隻", "船隻"], tip: "上面「隹」四橫要緊湊，下面「又」撇捺打開。" },
-            { ch: "人", zy: "ㄖㄣˊ", rad: "人部", strokes: 2, words: ["大人", "人們", "好人"], tip: "撇高捺低，兩筆交接要自然穩固。" },
-            { ch: "青", zy: "ㄑㄧㄥ", rad: "青部", strokes: 8, words: ["青草", "青蛙", "青山"], tip: "上半部三橫長短有別，下半部「月」第一筆寫成豎。" }
-          ]
-        }
-      ];
+    const LESSONS = [
+      {
+        id: 1,
+        title: "第一課〈拍拍手〉",
+        chars: [
+          { ch: "拍", zy: "ㄆㄞ", rad: "手部", strokes: 8, words: ["拍手", "拍拍手", "球拍"], tip: "提手旁第三筆是「提」，右邊白要寫正。" },
+          { ch: "手", zy: "ㄕㄡˇ", rad: "手部", strokes: 4, words: ["小手", "拍手", "右手"], tip: "第一筆是平撇，最後一筆豎鉤在正中央。" },
+          { ch: "左", zy: "ㄗㄨㄛˇ", rad: "工部", strokes: 5, words: ["左手", "左邊", "左右"], tip: "第一筆橫要長，下面「工」字要站穩。" },
+          { ch: "右", zy: "ㄧㄡˋ", rad: "口部", strokes: 5, words: ["右手", "右邊", "左右"], tip: "第一筆橫短、第二筆撇長，下面寫「口」。" },
+          { ch: "你", zy: "ㄋㄧˇ", rad: "人部", strokes: 7, words: ["你好", "你們", "你的"], tip: "左邊單人旁，右邊「尔」中間是豎鉤。" },
+          { ch: "他", zy: "ㄊㄚ", rad: "人部", strokes: 5, words: ["他們", "他的", "其他"], tip: "右邊「也」的豎彎鉤要圓潤有力。" },
+          { ch: "也", zy: "ㄧㄝˇ", rad: "乙部", strokes: 3, words: ["也是", "也好", "我也要"], tip: "第一筆橫折鉤斜度適中，最後豎彎鉤拉長。" },
+          { ch: "上", zy: "ㄕㄤˋ", rad: "一部", strokes: 3, words: ["上面", "上學", "上下"], tip: "先寫豎，再寫短橫，最後底橫要平穩。" },
+          { ch: "下", zy: "ㄒㄧㄚˋ", rad: "一部", strokes: 3, words: ["下面", "下課", "上下"], tip: "第一筆長橫在上方，中間豎要直，右邊一點。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第二課〈這是誰的〉",
+        chars: [
+          { ch: "這", zy: "ㄓㄜˋ", rad: "辵部", strokes: 11, words: ["這是", "這裡", "這個"], tip: "課本標準 11 畫！先寫「言」，最後寫辵部平捺。" },
+          { ch: "是", zy: "ㄕˋ", rad: "日部", strokes: 9, words: ["這是", "是的", "不是"], tip: "上面「日」寫得扁一點，最後平捺要舒展。" },
+          { ch: "誰", zy: "ㄕㄟˊ", rad: "言部", strokes: 15, words: ["是誰", "誰的", "誰來"], tip: "左邊言字旁，右邊「隹」四橫間距要相等。" },
+          { ch: "的", zy: "˙ㄉㄜ", rad: "白部", strokes: 8, words: ["我的", "你的", "誰的"], tip: "左邊「白」寫小一點，右邊「勺」裡面是一點。" },
+          { ch: "我", zy: "ㄨㄛˇ", rad: "戈部", strokes: 7, words: ["我們", "我的", "自我"], tip: "第五筆斜鉤要拉長，最後別忘記右上角一點。" },
+          { ch: "分", zy: "ㄈㄣ", rad: "刀部", strokes: 4, words: ["分享", "分開", "十分"], tip: "上面「八」撇低捺高，下面「刀」要置中。" },
+          { ch: "好", zy: "ㄏㄠˇ", rad: "女部", strokes: 6, words: ["你好", "好看", "好朋友"], tip: "左邊女字旁第三筆是提，右邊「子」橫畫要平。" },
+          { ch: "了", zy: "˙ㄌㄜ", rad: "亅部", strokes: 2, words: ["好了", "來了", "大了"], tip: "第一筆橫撇，第二筆彎鉤要垂直。" },
+          { ch: "啊", zy: "˙ㄚ", rad: "口部", strokes: 11, words: ["好啊", "是啊", "啊哈"], tip: "左邊口字旁靠上，中間耳朵旁，右邊是「可」。" },
+          { ch: "多", zy: "ㄉㄨㄛ", rad: "夕部", strokes: 6, words: ["多少", "很多", "多多"], tip: "上下兩個「夕」要對齊，下面比上面稍大。" },
+          { ch: "個", zy: "˙ㄍㄜ", rad: "人部", strokes: 10, words: ["一個", "個子", "這個"], tip: "左邊單人旁，右邊「固」外框要方正。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第三課〈秋千〉",
+        chars: [
+          { ch: "秋", zy: "ㄑㄧㄡ", rad: "禾部", strokes: 9, words: ["秋天", "秋千", "秋風"], tip: "左邊禾木旁最後一筆變點，右邊「火」撇捺舒展。" },
+          { ch: "千", zy: "ㄑㄧㄢ", rad: "十部", strokes: 3, words: ["秋千", "千萬", "一千"], tip: "第一筆是短平撇，第二筆橫要長，豎要直。" },
+          { ch: "和", zy: "ㄏㄜˊ", rad: "口部", strokes: 8, words: ["和平", "和你", "和好"], tip: "左邊禾木旁，右邊「口」字寫在中間偏下。" },
+          { ch: "玩", zy: "ㄨㄢˊ", rad: "玉部", strokes: 8, words: ["好玩", "玩耍", "玩具"], tip: "王字旁最後一筆變提，右邊「元」豎彎鉤要穩。" },
+          { ch: "陪", zy: "ㄆㄟˊ", rad: "阜部", strokes: 11, words: ["陪伴", "陪你", "陪我"], tip: "左邊耳朵旁，右邊「立」與「口」上下對齊。" },
+          { ch: "高", zy: "ㄍㄠ", rad: "高部", strokes: 10, words: ["高興", "高山", "很高"], tip: "點橫要平，上下兩個「口」要對齊。" },
+          { ch: "山", zy: "ㄕㄢ", rad: "山部", strokes: 3, words: ["高山", "山上", "火山"], tip: "中間豎畫最高，左右兩豎向內微傾。" },
+          { ch: "到", zy: "ㄉㄠˋ", rad: "刀部", strokes: 8, words: ["來到", "看到", "到達"], tip: "左邊「至」最後一橫變提，右邊立刀旁要直。" },
+          { ch: "大", zy: "ㄉㄚˋ", rad: "大部", strokes: 3, words: ["大人", "大小", "大個子"], tip: "橫畫平直，撇捺對稱打開。" },
+          { ch: "海", zy: "ㄏㄞˇ", rad: "水部", strokes: 10, words: ["大海", "海水", "海邊"], tip: "課本標準 10 畫！三點水旁，右邊「每」裡頭是兩點。" },
+          { ch: "朋", zy: "ㄆㄥˊ", rad: "月部", strokes: 8, words: ["朋友", "好朋友", "親朋"], tip: "左右兩個「月」字並排，要寫得瘦長對稱。" },
+          { ch: "友", zy: "ㄧㄡˇ", rad: "又部", strokes: 4, words: ["朋友", "友好", "好友"], tip: "第一筆橫、第二筆撇要長，下面「又」撇捺舒展。" },
+          { ch: "們", zy: "˙ㄇㄣ", rad: "人部", strokes: 10, words: ["我們", "你們", "他們"], tip: "單人旁靠左，右邊「門」字框要端正。" },
+          { ch: "起", zy: "ㄑㄧˇ", rad: "走部", strokes: 10, words: ["一起", "起來", "起立"], tip: "「走」的平捺要托住右邊的「己」，右邊己要封口。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第四課〈大個子，小個子〉",
+        chars: [
+          { ch: "蟲", zy: "ㄔㄨㄥˊ", rad: "虫部", strokes: 12, words: ["小蟲", "昆蟲", "毛毛蟲"], tip: "由兩個「虫」組成，上面的「虫」寫得扁一點。" },
+          { ch: "拉", zy: "ㄌㄚ", rad: "手部", strokes: 8, words: ["拉手", "拉開", "拉車"], tip: "左邊提手旁，右邊「立」的底橫要平穩。" },
+          { ch: "子", zy: "ㄗˇ", rad: "子部", strokes: 3, words: ["個子", "孩子", "葉子"], tip: "橫撇、彎鉤要連貫，最後一橫寫在中間偏上。" },
+          { ch: "開", zy: "ㄎㄞ", rad: "門部", strokes: 12, words: ["打開", "開心", "開門"], tip: "外面是「門」，裡面「开」兩橫要平、撇豎分明。" },
+          { ch: "看", zy: "ㄎㄢˋ", rad: "目部", strokes: 9, words: ["看見", "好看", "看書"], tip: "上面是「手」的變形，下面「目」要寫正。" },
+          { ch: "小", zy: "ㄒㄧㄠˇ", rad: "小部", strokes: 3, words: ["大小", "小個子", "小朋友"], tip: "先寫中間豎鉤，再寫左點、右點，左右對稱。" },
+          { ch: "心", zy: "ㄒㄧㄣ", rad: "心部", strokes: 4, words: ["開心", "小心", "愛心"], tip: "臥鉤要圓潤，三點位置高低錯落。" },
+          { ch: "我", zy: "ㄨㄛˇ", rad: "戈部", strokes: 7, words: ["我們", "自我", "我家"], tip: "斜鉤要挺拔有力，右上角點不能漏掉。" },
+          { ch: "記", zy: "ㄐㄧˋ", rad: "言部", strokes: 10, words: ["記得", "日記", "忘記"], tip: "左邊言字旁，右邊「己」豎彎鉤要圓潤。" },
+          { ch: "兩", zy: "ㄌㄧㄤˇ", rad: "入部", strokes: 8, words: ["兩個", "兩隻", "兩邊"], tip: "外框方正，裡面左右各一個「入」字。" },
+          { ch: "隻", zy: "ㄓ", rad: "隹部", strokes: 10, words: ["一隻", "兩隻", "船隻"], tip: "上面「隹」四橫要緊湊，下面「又」撇捺打開。" },
+          { ch: "人", zy: "ㄖㄣˊ", rad: "人部", strokes: 2, words: ["大人", "人們", "好人"], tip: "撇高捺低，兩筆交接要自然穩固。" },
+          { ch: "青", zy: "ㄑㄧㄥ", rad: "青部", strokes: 8, words: ["青草", "青蛙", "青山"], tip: "上半部三橫長短有別，下半部「月」第一筆寫成豎。" }
+        ]
+      }
+    ];
 
-      const DINO_STAGES = [
-        { lv: 1, emoji: "🥚", name: "魔法小龍蛋" },
-        { lv: 2, emoji: "🐣", name: "破殼小恐龍" },
-        { lv: 3, emoji: "🦕", name: "草葉小雷龍" },
-        { lv: 4, emoji: "🦖", name: "活力小暴龍" },
-        { lv: 5, emoji: "🐉", name: "飛天翼手龍" },
-        { lv: 6, emoji: "🔥", name: "烈焰三角龍" },
-        { lv: 7, emoji: "⚡", name: "閃電劍龍王" },
-        { lv: 8, emoji: "🌈", name: "彩虹水晶龍" },
-        { lv: 9, emoji: "🌟", name: "星辰獨角龍" },
-        { lv: 10, emoji: "👑", name: "黃金霸王龍" },
-        { lv: 11, emoji: "🚀", name: "銀河星際龍" },
-        { lv: 12, emoji: "🐲", name: "宇宙守護聖龍王" }
-      ];
+    const DINO_STAGES = [
+      { lv: 1, emoji: "🥚", name: "魔法小龍蛋" },
+      { lv: 2, emoji: "🐣", name: "破殼小恐龍" },
+      { lv: 3, emoji: "🦕", name: "草葉小雷龍" },
+      { lv: 4, emoji: "🦖", name: "活力小暴龍" },
+      { lv: 5, emoji: "🐉", name: "飛天翼手龍" },
+      { lv: 6, emoji: "🔥", name: "烈焰三角龍" },
+      { lv: 7, emoji: "⚡", name: "閃電劍龍王" },
+      { lv: 8, emoji: "🌈", name: "彩虹水晶龍" },
+      { lv: 9, emoji: "🌟", name: "星辰獨角龍" },
+      { lv: 10, emoji: "👑", name: "黃金霸王龍" },
+      { lv: 11, emoji: "🚀", name: "銀河星際龍" },
+      { lv: 12, emoji: "🐲", name: "宇宙守護聖龍王" }
+    ];
 
-      const STORAGE_KEY = "hanzi_adventure_cinthya_v2";
-      let state = {
-        stars: 0,
-        petLv: 1,
-        petXp: 0,
-        graduated: 0,
-        mastery: {},
-        streak: 1,
-        lastDate: new Date().toDateString()
-      };
+    const STORAGE_KEY = "hanzi_adventure_cinthya_v2";
+    let state = {
+      stars: 0,
+      petLv: 1,
+      petXp: 0,
+      graduated: 0,
+      mastery: {},
+      streak: 1,
+      lastDate: new Date().toDateString()
+    };
 
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (saved) state = Object.assign(state, saved);
+      const today = new Date().toDateString();
+      if (state.lastDate !== today) {
+        state.streak += 1;
+        state.lastDate = today;
+        if (state.streak % 7 === 0) state.stars += 5;
+        saveState();
+      }
+    } catch (e) {}
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    let currentLessonIdx = 0;
+    let currentCharIdx = 0;
+    let currentMode = "trace";
+    let writer = null;
+    let currentQuizTarget = null;
+
+    let selectedTwVoice = null;
+    let audioCtx = null;
+    let speechUnlocked = false;
+    let currentSpeechToken = 0;
+    const isIOSOrLine = /iPad|iPhone|iPod|Line/i.test(navigator.userAgent || "") ||
+                        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    let preferCloudTTS = false;
+
+    function getSharedTtsAudio() {
+      let el = document.getElementById("tts-audio-player");
+      if (!el) {
+        el = document.createElement("audio");
+        el.id = "tts-audio-player";
+        el.setAttribute("playsinline", "");
+        el.setAttribute("referrerpolicy", "no-referrer");
+        el.style.display = "none";
+        document.body.appendChild(el);
+      }
+      return el;
+    }
+
+    function playTone(type) {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (saved) state = { ...state, ...saved };
-        const today = new Date().toDateString();
-        if (state.lastDate !== today) {
-          state.streak += 1;
-          state.lastDate = today;
-          if (state.streak % 7 === 0) state.stars += 5;
-          saveState();
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        if (!audioCtx) audioCtx = new AudioContextClass();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        if (type === "win") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.09);
+          osc.frequency.setValueAtTime(783.99, now + 0.18);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+          osc.start(now);
+          osc.stop(now + 0.43);
+        } else if (type === "err") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.linearRampToValueAtTime(160, now + 0.2);
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.start(now);
+          osc.stop(now + 0.23);
+        } else {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(660, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.13);
         }
       } catch (e) {}
+    }
 
-      function saveState() {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-      }
-
-      let currentLessonIdx = 0;
-      let currentCharIdx = 0;
-      let currentMode = "trace";
-      let writer = null;
-      let currentQuizTarget = null;
-
-      let selectedTwVoice = null;
-      let audioCtx = null;
-      let speechUnlocked = false;
-      let currentSpeechToken = 0;
-      const isIOSOrLine = /iPad|iPhone|iPod|Line/i.test(navigator.userAgent || "") ||
-                          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      let preferCloudTTS = false;
-
-      function getSharedTtsAudio() {
-        let el = document.getElementById("tts-audio-player");
-        if (!el) {
-          el = document.createElement("audio");
-          el.id = "tts-audio-player";
-          el.setAttribute("playsinline", "");
-          el.setAttribute("referrerpolicy", "no-referrer");
-          el.style.display = "none";
-          document.body.appendChild(el);
-        }
-        return el;
-      }
-
-      function playTone(type) {
-        try {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContextClass) return;
+    function unlockAudioAndSpeech() {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
           if (!audioCtx) audioCtx = new AudioContextClass();
           if (audioCtx.state === "suspended") audioCtx.resume();
-          const now = audioCtx.currentTime;
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          if (type === "win") {
-            osc.type = "triangle";
-            osc.frequency.setValueAtTime(523.25, now);
-            osc.frequency.setValueAtTime(659.25, now + 0.09);
-            osc.frequency.setValueAtTime(783.99, now + 0.18);
-            gain.gain.setValueAtTime(0.18, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
-            osc.start(now);
-            osc.stop(now + 0.43);
-          } else if (type === "err") {
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(220, now);
-            osc.frequency.linearRampToValueAtTime(160, now + 0.2);
-            gain.gain.setValueAtTime(0.14, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-            osc.start(now);
-            osc.stop(now + 0.23);
-          } else {
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(660, now);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-            osc.start(now);
-            osc.stop(now + 0.13);
-          }
-        } catch (e) {}
-      }
-
-      function unlockAudioAndSpeech() {
-        try {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) {
-            if (!audioCtx) audioCtx = new AudioContextClass();
-            if (audioCtx.state === "suspended") audioCtx.resume();
-          }
-          if (!speechUnlocked) {
-            speechUnlocked = true;
-            try {
-              const sharedAudio = getSharedTtsAudio();
-              sharedAudio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-              sharedAudio.volume = 0.01;
-              const p = sharedAudio.play();
-              if (p && typeof p.then === "function") {
-                p.then(function () { sharedAudio.pause(); sharedAudio.volume = 1.0; })
-                 .catch(function () { sharedAudio.volume = 1.0; });
-              }
-            } catch (e) {}
-            if ("speechSynthesis" in window) {
-              try {
-                window.speechSynthesis.resume();
-                const silentUtter = new SpeechSynthesisUtterance("");
-                silentUtter.volume = 0;
-                window.speechSynthesis.speak(silentUtter);
-              } catch (e) {}
-            }
-          }
-        } catch (err) {}
-      }
-
-      ["touchstart", "pointerdown", "click"].forEach(function (evt) {
-        document.addEventListener(evt, unlockAudioAndSpeech, { passive: true });
-      });
-
-      function startAdventureWithAudio() {
-        unlockAudioAndSpeech();
-        const modal = document.getElementById("audio-welcome-modal");
-        if (modal) modal.classList.add("hidden");
-        playTone("win");
-        speakText("歡迎來到國字魔法冒險島！快選一課開始吧！");
-        showToast("🔊 魔法聲音已開啟！");
-      }
-
-      function refreshSystemVoices() {
-        if (!("speechSynthesis" in window)) return;
-        const voices = window.speechSynthesis.getVoices() || [];
-        const preferred = ["Meijia", "美佳", "HsiaoChen", "HsiaoYu", "Yating", "Google 國語（臺灣）", "Microsoft HsiaoChen", "Ting-Ting"];
-        for (let i = 0; i < preferred.length; i++) {
-          const name = preferred[i];
-          const found = voices.find(function (v) { return v.name && v.name.indexOf(name) !== -1; });
-          if (found) { selectedTwVoice = found; return; }
         }
-        selectedTwVoice = voices.find(function (v) { return v.lang && (v.lang.indexOf("zh-TW") !== -1 || v.lang.indexOf("zh_TW") !== -1); }) ||
-                          voices.find(function (v) { return v.lang && v.lang.indexOf("zh") !== -1; }) || null;
+        if (!speechUnlocked) {
+          speechUnlocked = true;
+          try {
+            const sharedAudio = getSharedTtsAudio();
+            sharedAudio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+            sharedAudio.volume = 0.01;
+            const p = sharedAudio.play();
+            if (p && typeof p.then === "function") {
+              p.then(function () { sharedAudio.pause(); sharedAudio.volume = 1.0; })
+               .catch(function () { sharedAudio.volume = 1.0; });
+            }
+          } catch (e) {}
+          if ("speechSynthesis" in window) {
+            try {
+              window.speechSynthesis.resume();
+              const silentUtter = new SpeechSynthesisUtterance("");
+              silentUtter.volume = 0;
+              window.speechSynthesis.speak(silentUtter);
+            } catch (e) {}
+          }
+        }
+      } catch (err) {}
+    }
+
+    ["touchstart", "pointerdown", "click"].forEach(function (evt) {
+      document.addEventListener(evt, unlockAudioAndSpeech, { passive: true });
+    });
+
+    function startAdventureWithAudio() {
+      unlockAudioAndSpeech();
+      const modal = document.getElementById("audio-welcome-modal");
+      if (modal) modal.classList.add("hidden");
+      playTone("win");
+      speakText("歡迎來到國字魔法冒險島！快選一課開始吧！");
+      showToast("🔊 魔法聲音已開啟！");
+    }
+
+    function refreshSystemVoices() {
+      if (!("speechSynthesis" in window)) return;
+      const voices = window.speechSynthesis.getVoices() || [];
+      const preferred = ["Meijia", "美佳", "HsiaoChen", "HsiaoYu", "Yating", "Google 國語（臺灣）", "Microsoft HsiaoChen", "Ting-Ting"];
+      for (let i = 0; i < preferred.length; i++) {
+        const name = preferred[i];
+        const found = voices.find(function (v) { return v.name && v.name.indexOf(name) !== -1; });
+        if (found) { selectedTwVoice = found; return; }
+      }
+      selectedTwVoice = voices.find(function (v) { return v.lang && (v.lang.indexOf("zh-TW") !== -1 || v.lang.indexOf("zh_TW") !== -1); }) ||
+                        voices.find(function (v) { return v.lang && v.lang.indexOf("zh") !== -1; }) || null;
+    }
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = refreshSystemVoices;
+      refreshSystemVoices();
+    }
+
+    function stopAllSpeech() {
+      currentSpeechToken += 1;
+      try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
+      try {
+        const sharedAudio = getSharedTtsAudio();
+        sharedAudio.onended = null;
+        sharedAudio.onerror = null;
+        sharedAudio.pause();
+      } catch (e) {}
+    }
+
+    function splitSpeechChunks(text) {
+      const raw = String(text || "").trim();
+      if (!raw) return [];
+      const parts = raw.split(/([，。！？、；：!?,.]+)/);
+      const chunks = [];
+      let buf = "";
+      for (let i = 0; i < parts.length; i++) {
+        const piece = parts[i];
+        if (!piece) continue;
+        if ((buf + piece).length <= 65) buf += piece;
+        else {
+          if (buf.trim()) chunks.push(buf.trim());
+          buf = piece;
+        }
+      }
+      if (buf.trim()) chunks.push(buf.trim());
+      return chunks.length > 0 ? chunks : [raw.slice(0, 65)];
+    }
+
+    function playFallbackOnlineTts(text, customRate, token, onDone) {
+      if (token !== currentSpeechToken) return;
+      const chunks = splitSpeechChunks(text);
+      if (chunks.length === 0) { if (typeof onDone === "function") onDone(); return; }
+      const rate = typeof customRate === "number" ? Math.max(0.75, Math.min(1.15, customRate + 0.08)) : 0.96;
+      const sharedAudio = getSharedTtsAudio();
+
+      function playChunkAt(i) {
+        if (token !== currentSpeechToken) return;
+        if (i >= chunks.length) { if (typeof onDone === "function") onDone(); return; }
+        const chunk = chunks[i];
+        const endpoints = [
+          "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(chunk),
+          "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(chunk) + "&le=zh"
+        ];
+        let epIdx = 0;
+        function tryEndpoint() {
+          if (token !== currentSpeechToken) return;
+          if (epIdx >= endpoints.length) { playChunkAt(i + 1); return; }
+          const url = endpoints[epIdx++];
+          sharedAudio.onended = function () { if (token === currentSpeechToken) playChunkAt(i + 1); };
+          sharedAudio.onerror = function () { if (token === currentSpeechToken) tryEndpoint(); };
+          sharedAudio.volume = 1.0;
+          sharedAudio.src = url;
+          sharedAudio.playbackRate = rate;
+          const p = sharedAudio.play();
+          if (p && typeof p.catch === "function") {
+            p.catch(function () {
+              if (token === currentSpeechToken) {
+                if (epIdx < endpoints.length) tryEndpoint();
+                else showToast("🔇 若沒聽到人聲，請確認 iPad 未開靜音並用 Safari 開啟喔！");
+              }
+            });
+          }
+        }
+        tryEndpoint();
+      }
+      playChunkAt(0);
+    }
+
+    function speakText(text, customRate, onDone) {
+      if (!text) return;
+      unlockAudioAndSpeech();
+      stopAllSpeech();
+      const token = currentSpeechToken;
+      const rate = typeof customRate === "number" ? customRate : 0.88;
+      const isLineBrowser = /Line/i.test(navigator.userAgent || "");
+
+      if (preferCloudTTS || isLineBrowser) {
+        playFallbackOnlineTts(text, rate, token, onDone);
+        return;
       }
 
       if ("speechSynthesis" in window) {
-        window.speechSynthesis.onvoiceschanged = refreshSystemVoices;
         refreshSystemVoices();
-      }
+        const voices = window.speechSynthesis.getVoices() || [];
+        const hasTwVoice = !!selectedTwVoice || voices.some(function (v) { return v.lang && v.lang.toLowerCase().indexOf("zh") !== -1; });
+        if (hasTwVoice) {
+          try {
+            window.speechSynthesis.resume();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = "zh-TW";
+            if (selectedTwVoice) utter.voice = selectedTwVoice;
+            utter.rate = rate;
+            utter.pitch = 1.12;
+            utter.volume = 1.0;
 
-      function stopAllSpeech() {
-        currentSpeechToken += 1;
-        try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
-        try {
-          const sharedAudio = getSharedTtsAudio();
-          sharedAudio.onended = null;
-          sharedAudio.onerror = null;
-          sharedAudio.pause();
-        } catch (e) {}
-      }
+            let started = false;
+            utter.onstart = function () { started = true; };
+            utter.onend = function () { if (token === currentSpeechToken && typeof onDone === "function") onDone(); };
+            utter.onerror = function () {
+              if (token === currentSpeechToken && !started) {
+                if (isIOSOrLine) preferCloudTTS = true;
+                playFallbackOnlineTts(text, rate, token, onDone);
+              }
+            };
+            window.speechSynthesis.speak(utter);
 
-      function splitSpeechChunks(text) {
-        const raw = String(text || "").trim();
-        if (!raw) return [];
-        const parts = raw.split(/([，。！？、；：!?,.\u000a]+)/);
-        const chunks = [];
-        let buf = "";
-        for (let i = 0; i < parts.length; i++) {
-          const piece = parts[i];
-          if (!piece) continue;
-          if ((buf + piece).length <= 65) buf += piece;
-          else {
-            if (buf.trim()) chunks.push(buf.trim());
-            buf = piece;
-          }
+            setTimeout(function () {
+              if (token === currentSpeechToken && !started) {
+                if (isIOSOrLine) preferCloudTTS = true;
+                try { window.speechSynthesis.cancel(); } catch (e) {}
+                playFallbackOnlineTts(text, rate, token, onDone);
+              }
+            }, 450);
+            return;
+          } catch (err) {}
         }
-        if (buf.trim()) chunks.push(buf.trim());
-        return chunks.length > 0 ? chunks : [raw.slice(0, 65)];
       }
 
-      function playFallbackOnlineTts(text, customRate, token, onDone) {
-        if (token !== currentSpeechToken) return;
-        const chunks = splitSpeechChunks(text);
-        if (chunks.length === 0) { if (typeof onDone === "function") onDone(); return; }
-        const rate = typeof customRate === "number" ? Math.max(0.75, Math.min(1.15, customRate + 0.08)) : 0.96;
-        const sharedAudio = getSharedTtsAudio();
+      if (isIOSOrLine) preferCloudTTS = true;
+      playFallbackOnlineTts(text, rate, token, onDone);
+    }
 
-        function playChunkAt(i) {
-          if (token !== currentSpeechToken) return;
-          if (i >= chunks.length) { if (typeof onDone === "function") onDone(); return; }
-          const chunk = chunks[i];
-          const endpoints = [
-            "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(chunk),
-            "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(chunk) + "&le=zh"
-          ];
-          let epIdx = 0;
-          function tryEndpoint() {
-            if (token !== currentSpeechToken) return;
-            if (epIdx >= endpoints.length) { playChunkAt(i + 1); return; }
-            const url = endpoints[epIdx++];
-            sharedAudio.onended = function () { if (token === currentSpeechToken) playChunkAt(i + 1); };
-            sharedAudio.onerror = function () { if (token === currentSpeechToken) tryEndpoint(); };
-            sharedAudio.volume = 1.0;
-            sharedAudio.src = url;
-            sharedAudio.playbackRate = rate;
-            const p = sharedAudio.play();
-            if (p && typeof p.catch === "function") {
-              p.catch(function () {
-                if (token === currentSpeechToken) {
-                  if (epIdx < endpoints.length) tryEndpoint();
-                  else showToast("🔇 若沒聽到人聲，請確認 iPad 未開靜音並用 Safari 開啟喔！");
-                }
-              });
-            }
-          }
-          tryEndpoint();
-        }
-        playChunkAt(0);
+    function speakGreeting() {
+      unlockAudioAndSpeech();
+      playTone("win");
+      speakText("你好，歡迎來到國字魔法冒險島！我們一起來學寫字吧！");
+      showToast("🌸 溫柔大姊姊陪你一起學寫字！");
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(t._timer);
+      t._timer = setTimeout(function () { t.classList.remove("show"); }, 2600);
+    }
+
+    function updateTopAndPetUI() {
+      document.getElementById("star-count").textContent = state.stars;
+      document.getElementById("streak-count").textContent = state.streak;
+      document.getElementById("graduated-count").textContent = state.graduated;
+
+      const stage = DINO_STAGES[Math.min(state.petLv - 1, DINO_STAGES.length - 1)];
+      document.getElementById("pet-emoji").textContent = stage.emoji;
+      document.getElementById("pet-name").textContent = "Lv." + state.petLv + " " + stage.name;
+      const needXp = state.petLv * 10;
+      const pct = Math.min(100, Math.round((state.petXp / needXp) * 100));
+      document.getElementById("pet-xp-fill").style.width = pct + "%";
+      document.getElementById("pet-desc").textContent =
+        state.petLv >= 12 ? "已達最高神龍王！再餵食即可榮耀畢業領養新龍蛋！" : "升級進度：" + state.petXp + " / " + needXp + " 經驗值";
+    }
+
+    function feedDino() {
+      if (state.stars < 3) {
+        playTone("err");
+        showToast("⭐ 星星不夠喔！快去練寫國字收集 3 顆星星吧！");
+        return;
       }
-
-      function speakText(text, customRate, onDone) {
-        if (!text) return;
-        unlockAudioAndSpeech();
-        stopAllSpeech();
-        const token = currentSpeechToken;
-        const rate = typeof customRate === "number" ? customRate : 0.88;
-        const isLineBrowser = /Line/i.test(navigator.userAgent || "");
-
-        if (preferCloudTTS || isLineBrowser) {
-          playFallbackOnlineTts(text, rate, token, onDone);
-          return;
-        }
-
-        if ("speechSynthesis" in window) {
-          refreshSystemVoices();
-          const voices = window.speechSynthesis.getVoices() || [];
-          const hasTwVoice = !!selectedTwVoice || voices.some(function (v) { return v.lang && v.lang.toLowerCase().indexOf("zh") !== -1; });
-          if (hasTwVoice) {
-            try {
-              window.speechSynthesis.resume();
-              const utter = new SpeechSynthesisUtterance(text);
-              utter.lang = "zh-TW";
-              if (selectedTwVoice) utter.voice = selectedTwVoice;
-              utter.rate = rate;
-              utter.pitch = 1.12;
-              utter.volume = 1.0;
-
-              let started = false;
-              utter.onstart = function () { started = true; };
-              utter.onend = function () { if (token === currentSpeechToken && typeof onDone === "function") onDone(); };
-              utter.onerror = function () {
-                if (token === currentSpeechToken && !started) {
-                  if (isIOSOrLine) preferCloudTTS = true;
-                  playFallbackOnlineTts(text, rate, token, onDone);
-                }
-              };
-              window.speechSynthesis.speak(utter);
-
-              setTimeout(function () {
-                if (token === currentSpeechToken && !started) {
-                  if (isIOSOrLine) preferCloudTTS = true;
-                  try { window.speechSynthesis.cancel(); } catch (e) {}
-                  playFallbackOnlineTts(text, rate, token, onDone);
-                }
-              }, 450);
-              return;
-            } catch (err) {}
-          }
-        }
-
-        if (isIOSOrLine) preferCloudTTS = true;
-        playFallbackOnlineTts(text, rate, token, onDone);
-      }
-
-      function speakGreeting() {
-        unlockAudioAndSpeech();
-        playTone("win");
-        speakText("你好，歡迎來到國字魔法冒險島！我們一起來學寫字吧！");
-        showToast("🌸 溫柔大姊姊陪你一起學寫字！");
-      }
-
-      function showToast(msg) {
-        const t = document.getElementById("toast");
-        if (!t) return;
-        t.textContent = msg;
-        t.classList.add("show");
-        clearTimeout(t._timer);
-        t._timer = setTimeout(function () { t.classList.remove("show"); }, 2600);
-      }
-
-      function updateTopAndPetUI() {
-        document.getElementById("star-count").textContent = state.stars;
-        document.getElementById("streak-count").textContent = state.streak;
-        document.getElementById("graduated-count").textContent = state.graduated;
-
-        const stage = DINO_STAGES[Math.min(state.petLv - 1, DINO_STAGES.length - 1)];
-        document.getElementById("pet-emoji").textContent = stage.emoji;
-        document.getElementById("pet-name").textContent = "Lv." + state.petLv + " " + stage.name;
-        const needXp = state.petLv * 10;
-        const pct = Math.min(100, Math.round((state.petXp / needXp) * 100));
-        document.getElementById("pet-xp-fill").style.width = pct + "%";
-        document.getElementById("pet-desc").textContent =
-          state.petLv >= 12 ? "已達最高神龍王！再餵食即可榮耀畢業領養新龍蛋！" : "升級進度：" + state.petXp + " / " + needXp + " 經驗值";
-      }
-
-      function feedDino() {
-        if (state.stars < 3) {
-          playTone("err");
-          showToast("⭐ 星星不夠喔！快去練寫國字收集 3 顆星星吧！");
-          return;
-        }
-        state.stars -= 3;
-        state.petXp += 10;
-        const needXp = state.petLv * 10;
-        if (state.petXp >= needXp) {
-          state.petXp = 0;
-          if (state.petLv < 12) {
-            state.petLv += 1;
-            const st = DINO_STAGES[state.petLv - 1];
-            playTone("win");
-            speakText("太厲害了！恐龍進化成" + st.name + "了！");
-            showToast("🎉 恭喜進化成 Lv." + state.petLv + " " + st.name + "！");
-          } else {
-            state.graduated += 1;
-            state.petLv = 1;
-            playTone("win");
-            speakText("宇宙守護聖龍王榮耀畢業進入神龍殿！獲得一顆新的魔法小龍蛋！");
-            showToast("🏆 聖龍王榮耀畢業！領養了新魔法小龍蛋！");
-          }
+      state.stars -= 3;
+      state.petXp += 10;
+      const needXp = state.petLv * 10;
+      if (state.petXp >= needXp) {
+        state.petXp = 0;
+        if (state.petLv < 12) {
+          state.petLv += 1;
+          const st = DINO_STAGES[state.petLv - 1];
+          playTone("win");
+          speakText("太厲害了！恐龍進化成" + st.name + "了！");
+          showToast("🎉 恭喜進化成 Lv." + state.petLv + " " + st.name + "！");
         } else {
-          playTone("tap");
-          showToast("🍎 恐龍吃飽飽，經驗值 +10！");
+          state.graduated += 1;
+          state.petLv = 1;
+          playTone("win");
+          speakText("宇宙守護聖龍王榮耀畢業進入神龍殿！獲得一顆新的魔法小龍蛋！");
+          showToast("🏆 聖龍王榮耀畢業！領養了新魔法小龍蛋！");
         }
-        saveState();
-        updateTopAndPetUI();
-      }
-
-      function renderLessons() {
-        const grid = document.getElementById("lesson-grid");
-        grid.innerHTML = "";
-        LESSONS.forEach(function (lesson, idx) {
-          const card = document.createElement("div");
-          card.className = "lesson-card" + (idx === currentLessonIdx ? " active" : "");
-          const charPreview = lesson.chars.map(function (c) { return c.ch; }).join(" ");
-          card.innerHTML =
-            '<div class="lesson-badge">共 ' + lesson.chars.length + ' 字</div>' +
-            '<div class="lesson-name">' + lesson.title + '</div>' +
-            '<div class="lesson-chars">' + charPreview + '</div>';
-          card.addEventListener("click", function () {
-            playTone("tap");
-            currentLessonIdx = idx;
-            currentCharIdx = 0;
-            renderLessons();
-            renderCharSelector();
-            loadCurrentChar(true);
-          });
-          grid.appendChild(card);
-        });
-      }
-
-      function renderCharSelector() {
-        const wrap = document.getElementById("char-selector");
-        wrap.innerHTML = "";
-        const lesson = LESSONS[currentLessonIdx];
-        lesson.chars.forEach(function (item, idx) {
-          const chip = document.createElement("button");
-          chip.type = "button";
-          chip.className = "char-chip" + (idx === currentCharIdx ? " active" : "");
-          const lv = state.mastery[item.ch] || 0;
-          const crown = lv >= 3 ? "👑" : lv === 2 ? "🌟" : lv === 1 ? "⭐" : "▫️";
-          chip.innerHTML = "<span>" + item.ch + "</span><span class="crown">" + crown + "</span>";
-          chip.addEventListener("click", function () {
-            playTone("tap");
-            currentCharIdx = idx;
-            renderCharSelector();
-            loadCurrentChar(true);
-          });
-          wrap.appendChild(chip);
-        });
-      }
-
-      function switchMode(mode) {
+      } else {
         playTone("tap");
-        currentMode = mode;
-        ["trace", "blind", "quiz", "dictation"].forEach(function (m) {
-          document.getElementById("tab-" + m).classList.toggle("active", m === mode);
-        });
-        if (mode === "quiz") {
-          document.getElementById("write-stage").style.display = "none";
-          document.getElementById("quiz-stage").style.display = "block";
-          setupQuizQuestion();
-        } else {
-          document.getElementById("write-stage").style.display = "grid";
-          document.getElementById("quiz-stage").style.display = "none";
+        showToast("🍎 恐龍吃飽飽，經驗值 +10！");
+      }
+      saveState();
+      updateTopAndPetUI();
+    }
+
+    function renderLessons() {
+      const grid = document.getElementById("lesson-grid");
+      grid.innerHTML = "";
+      LESSONS.forEach(function (lesson, idx) {
+        const card = document.createElement("div");
+        card.className = "lesson-card" + (idx === currentLessonIdx ? " active" : "");
+        const charPreview = lesson.chars.map(function (c) { return c.ch; }).join(" ");
+        card.innerHTML =
+          '<div class="lesson-badge">共 ' + lesson.chars.length + ' 字</div>' +
+          '<div class="lesson-name">' + lesson.title + '</div>' +
+          '<div class="lesson-chars">' + charPreview + '</div>';
+        card.onclick = function () {
+          playTone("tap");
+          currentLessonIdx = idx;
+          currentCharIdx = 0;
+          renderLessons();
+          renderCharSelector();
           loadCurrentChar(true);
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    function renderCharSelector() {
+      const wrap = document.getElementById("char-selector");
+      wrap.innerHTML = "";
+      const lesson = LESSONS[currentLessonIdx];
+      lesson.chars.forEach(function (item, idx) {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "char-chip" + (idx === currentCharIdx ? " active" : "");
+        const lv = state.mastery[item.ch] || 0;
+        const crown = lv >= 3 ? "👑" : lv === 2 ? "🌟" : lv === 1 ? "⭐" : "▫️";
+        chip.innerHTML = "<span>" + item.ch + "</span><span class='crown'>" + crown + "</span>";
+        chip.onclick = function () {
+          playTone("tap");
+          currentCharIdx = idx;
+          renderCharSelector();
+          loadCurrentChar(true);
+        };
+        wrap.appendChild(chip);
+      });
+    }
+
+    function switchMode(mode) {
+      playTone("tap");
+      currentMode = mode;
+      ["trace", "blind", "quiz", "dictation"].forEach(function (m) {
+        document.getElementById("tab-" + m).classList.toggle("active", m === mode);
+      });
+      if (mode === "quiz") {
+        document.getElementById("write-stage").style.display = "none";
+        document.getElementById("quiz-stage").style.display = "block";
+        setupQuizQuestion();
+      } else {
+        document.getElementById("write-stage").style.display = "grid";
+        document.getElementById("quiz-stage").style.display = "none";
+        loadCurrentChar(true);
+      }
+    }
+
+    function loadCurrentChar(autoSpeak) {
+      const lesson = LESSONS[currentLessonIdx];
+      const item = lesson.chars[currentCharIdx];
+
+      document.getElementById("info-char").textContent = currentMode === "dictation" ? "？" : item.ch;
+      document.getElementById("info-zhuyin").textContent = item.zy;
+      document.getElementById("info-radical").textContent = "部首：" + item.rad + " ｜ 總筆畫：" + item.strokes + " 畫";
+      document.getElementById("info-tip").textContent = "💡 寫字小幫手：" + item.tip;
+
+      const wordsBox = document.getElementById("info-words");
+      wordsBox.innerHTML = "";
+      item.words.forEach(function (w) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "word-pill";
+        const displayWord = currentMode === "dictation" ? w.split(item.ch).join("□") : w;
+        b.textContent = "🔊 " + displayWord;
+        b.onclick = function () { speakText(w); };
+        wordsBox.appendChild(b);
+      });
+
+      const hintEl = document.getElementById("write-hint");
+      if (currentMode === "trace") hintEl.textContent = "✍️ 跟著底字一筆一畫描寫，寫完送星星！";
+      else if (currentMode === "blind") hintEl.textContent = "🌟 挑戰不看底字，憑記憶寫出正確筆順！";
+      else if (currentMode === "dictation") hintEl.textContent = "👑 聽寫大魔王：聽造詞提示，寫出正確的國字！";
+
+      initHanziWriter(item.ch);
+
+      if (autoSpeak) {
+        if (currentMode === "dictation") {
+          speakText("聽寫題目：" + item.words[0] + "的「" + item.ch + "」");
+        } else {
+          speakText(item.ch + "，" + item.words.join("、"));
         }
       }
+    }
 
-      function loadCurrentChar(autoSpeak) {
-        const lesson = LESSONS[currentLessonIdx];
-        const item = lesson.chars[currentCharIdx];
-
-        document.getElementById("info-char").textContent = currentMode === "dictation" ? "？" : item.ch;
-        document.getElementById("info-zhuyin").textContent = item.zy;
-        document.getElementById("info-radical").textContent = "部首：" + item.rad + " ｜ 總筆畫：" + item.strokes + " 畫";
-        document.getElementById("info-tip").textContent = "💡 寫字小幫手：" + item.tip;
-
-        const wordsBox = document.getElementById("info-words");
-        wordsBox.innerHTML = "";
-        item.words.forEach(function (w) {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "word-pill";
-          const displayWord = currentMode === "dictation" ? w.split(item.ch).join("□") : w;
-          b.textContent = "🔊 " + displayWord;
-          b.addEventListener("click", function () { speakText(w); });
-          wordsBox.appendChild(b);
+    function initHanziWriter(char) {
+      const box = document.getElementById("writer-box");
+      box.innerHTML = "";
+      const showOutline = currentMode === "trace";
+      try {
+        if (typeof HanziWriter === "undefined") throw new Error("HanziWriter not loaded");
+        writer = HanziWriter.create("writer-box", char, {
+          width: 252,
+          height: 252,
+          padding: 16,
+          showCharacter: false,
+          showOutline: showOutline,
+          strokeColor: "#212529",
+          outlineColor: "#ffccd5",
+          highlightColor: "#ff6b9d",
+          drawingColor: "#364fc7",
+          drawingWidth: 16,
+          showHintAfterMisses: currentMode === "trace" ? 2 : 3
         });
-
-        const hintEl = document.getElementById("write-hint");
-        if (currentMode === "trace") hintEl.textContent = "✍️ 跟著底字一筆一畫描寫，寫完送星星！";
-        else if (currentMode === "blind") hintEl.textContent = "🌟 挑戰不看底字，憑記憶寫出正確筆順！";
-        else if (currentMode === "dictation") hintEl.textContent = "👑 聽寫大魔王：聽造詞提示，寫出正確的國字！";
-
-        initHanziWriter(item.ch);
-
-        if (autoSpeak) {
-          if (currentMode === "dictation") {
-            speakText("聽寫題目：" + item.words[0] + "的「" + item.ch + "」");
-          } else {
-            speakText(item.ch + "，" + item.words.join("、"));
-          }
-        }
+        startQuizStroke();
+      } catch (e) {
+        box.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--font-kai);font-size:8rem;color:#ffccd5;">' + char + '</div>';
       }
+    }
 
-      function initHanziWriter(char) {
-        const box = document.getElementById("writer-box");
-        box.innerHTML = "";
-        const showOutline = currentMode === "trace";
-        try {
-          if (typeof HanziWriter === "undefined") throw new Error("HanziWriter not loaded");
-          writer = HanziWriter.create("writer-box", char, {
-            width: 252,
-            height: 252,
-            padding: 16,
-            showCharacter: false,
-            showOutline: showOutline,
-            strokeColor: "#212529",
-            outlineColor: "#ffccd5",
-            highlightColor: "#ff6b9d",
-            drawingColor: "#364fc7",
-            drawingWidth: 16,
-            showHintAfterMisses: currentMode === "trace" ? 2 : 3
-          });
-          startQuizStroke();
-        } catch (e) {
-          box.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--font-kai);font-size:8rem;color:#ffccd5;">' + char + '</div>';
+    function startQuizStroke() {
+      if (!writer) return;
+      const item = LESSONS[currentLessonIdx].chars[currentCharIdx];
+      writer.quiz({
+        onMistake: function () {
+          playTone("err");
+        },
+        onComplete: function () {
+          playTone("win");
+          document.getElementById("info-char").textContent = item.ch;
+          const prevLv = state.mastery[item.ch] || 0;
+          const earnedLv = currentMode === "dictation" ? 3 : currentMode === "blind" ? 2 : 1;
+          if (earnedLv > prevLv) state.mastery[item.ch] = earnedLv;
+          const reward = earnedLv;
+          state.stars += reward;
+          state.petXp += reward * 3;
+          saveState();
+          updateTopAndPetUI();
+          renderCharSelector();
+          speakText("太棒了！寫對「" + item.ch + "」了，獲得" + reward + "顆星星！");
+          showToast("🎉 完成「" + item.ch + "」！獲得 +" + reward + " ⭐");
         }
-      }
+      });
+    }
 
-      function startQuizStroke() {
-        if (!writer) return;
-        const item = LESSONS[currentLessonIdx].chars[currentCharIdx];
-        writer.quiz({
-          onMistake: function () {
-            playTone("err");
-          },
-          onComplete: function () {
+    function animateStroke() {
+      if (!writer) return;
+      playTone("tap");
+      writer.animateCharacter({ onComplete: function () { startQuizStroke(); } });
+    }
+
+    function resetWriter() {
+      playTone("tap");
+      initHanziWriter(LESSONS[currentLessonIdx].chars[currentCharIdx].ch);
+    }
+
+    function nextChar() {
+      playTone("tap");
+      const lesson = LESSONS[currentLessonIdx];
+      currentCharIdx = (currentCharIdx + 1) % lesson.chars.length;
+      renderCharSelector();
+      loadCurrentChar(true);
+    }
+
+    function speakCurrentCharAndWords() {
+      const item = LESSONS[currentLessonIdx].chars[currentCharIdx];
+      speakText(item.ch + "，" + item.words.join("、"));
+    }
+
+    function setupQuizQuestion() {
+      const lesson = LESSONS[currentLessonIdx];
+      const pool = lesson.chars.slice();
+      const target = pool[Math.floor(Math.random() * pool.length)];
+      currentQuizTarget = target;
+
+      const others = pool.filter(function (c) { return c.ch !== target.ch; })
+                         .sort(function () { return Math.random() - 0.5; })
+                         .slice(0, 3);
+      const options = [target].concat(others).sort(function () { return Math.random() - 0.5; });
+
+      document.getElementById("quiz-prompt-text").textContent = "請選出「" + target.words[0] + "」的「" + target.zy + "」";
+      const optWrap = document.getElementById("quiz-options");
+      optWrap.innerHTML = "";
+      options.forEach(function (opt) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "quiz-opt";
+        btn.textContent = opt.ch;
+        btn.onclick = function () {
+          if (opt.ch === target.ch) {
+            btn.classList.add("correct");
             playTone("win");
-            document.getElementById("info-char").textContent = item.ch;
-            const prevLv = state.mastery[item.ch] || 0;
-            const earnedLv = currentMode === "dictation" ? 3 : currentMode === "blind" ? 2 : 1;
-            if (earnedLv > prevLv) state.mastery[item.ch] = earnedLv;
-            const reward = earnedLv;
-            state.stars += reward;
-            state.petXp += reward * 3;
+            state.stars += 1;
+            state.petXp += 3;
             saveState();
             updateTopAndPetUI();
-            renderCharSelector();
-            speakText("太棒了！寫對「" + item.ch + "」了，獲得" + reward + "顆星星！");
-            showToast("🎉 完成「" + item.ch + "」！獲得 +" + reward + " ⭐");
+            speakText("答對了！就是" + target.words[0] + "的「" + target.ch + "」！");
+            showToast("🎯 答對了！「" + target.ch + "」+1 ⭐");
+            setTimeout(setupQuizQuestion, 1300);
+          } else {
+            btn.classList.add("wrong");
+            playTone("err");
+            speakText("再想一想喔，這是「" + opt.ch + "」");
           }
-        });
-      }
+        };
+        optWrap.appendChild(btn);
+      });
 
-      function setupQuizQuestion() {
-        const lesson = LESSONS[currentLessonIdx];
-        const pool = lesson.chars.slice();
-        const target = pool[Math.floor(Math.random() * pool.length)];
-        currentQuizTarget = target;
+      playQuizPrompt();
+    }
 
-        const others = pool.filter(function (c) { return c.ch !== target.ch; })
-                           .sort(function () { return Math.random() - 0.5; })
-                           .slice(0, 3);
-        const options = [target].concat(others).sort(function () { return Math.random() - 0.5; });
+    function playQuizPrompt() {
+      if (!currentQuizTarget) return;
+      speakText("請選出「" + currentQuizTarget.words[0] + "」的「" + currentQuizTarget.ch + "」");
+    }
 
-        document.getElementById("quiz-prompt-text").textContent = "請選出「" + target.words[0] + "」的「" + target.zy + "」";
-        const optWrap = document.getElementById("quiz-options");
-        optWrap.innerHTML = "";
-        options.forEach(function (opt) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "quiz-opt";
-          btn.textContent = opt.ch;
-          btn.addEventListener("click", function () {
-            if (opt.ch === target.ch) {
-              btn.classList.add("correct");
-              playTone("win");
-              state.stars += 1;
-              state.petXp += 3;
-              saveState();
-              updateTopAndPetUI();
-              speakText("答對了！就是" + target.words[0] + "的「" + target.ch + "」！");
-              showToast("🎯 答對了！「" + target.ch + "」+1 ⭐");
-              setTimeout(setupQuizQuestion, 1300);
-            } else {
-              btn.classList.add("wrong");
-              playTone("err");
-              speakText("再想一想喔，這是「" + opt.ch + "」");
-            }
-          });
-          optWrap.appendChild(btn);
-        });
-
-        playQuizPrompt();
-      }
-
-      function playQuizPrompt() {
-        if (!currentQuizTarget) return;
-        speakText("請選出「" + currentQuizTarget.words[0] + "」的「" + currentQuizTarget.ch + "」");
-      }
-
-      function openStampBookModal() {
-        playTone("tap");
-        const container = document.getElementById("stamp-book-content");
-        container.innerHTML = LESSONS.map(function (l) {
-          const cells = l.chars.map(function (c) {
-            const lv = state.mastery[c.ch] || 0;
-            const badge = lv >= 3 ? "👑" : lv === 2 ? "🌟" : lv === 1 ? "⭐" : "⬜";
-            return '<div style="border:1.5px solid #ffe3ec;border-radius:12px;padding:6px 10px;text-align:center;min-width:52px;">' +
-              '<div style="font-family:var(--font-kai);font-size:1.35rem;font-weight:700;">' + c.ch + '</div>' +
-              '<div style="font-size:0.8rem;">' + badge + '</div></div>';
-          }).join("");
-          return '<div style="margin-bottom:14px;"><div style="font-weight:800;margin-bottom:6px;color:#364fc7;">' + l.title + '</div><div style="display:flex;flex-wrap:wrap;gap:6px;">' + cells + '</div></div>';
+    function openStampBookModal() {
+      playTone("tap");
+      const container = document.getElementById("stamp-book-content");
+      container.innerHTML = LESSONS.map(function (l) {
+        const cells = l.chars.map(function (c) {
+          const lv = state.mastery[c.ch] || 0;
+          const badge = lv >= 3 ? "👑" : lv === 2 ? "🌟" : lv === 1 ? "⭐" : "⬜";
+          return '<div style="border:1.5px solid #ffe3ec;border-radius:12px;padding:6px 10px;text-align:center;min-width:52px;">' +
+            '<div style="font-family:var(--font-kai);font-size:1.35rem;font-weight:700;">' + c.ch + '</div>' +
+            '<div style="font-size:0.8rem;">' + badge + '</div></div>';
         }).join("");
-        document.getElementById("stamp-modal").classList.add("open");
-      }
+        return '<div style="margin-bottom:14px;"><div style="font-weight:800;margin-bottom:6px;color:#364fc7;">' + l.title + '</div><div style="display:flex;flex-wrap:wrap;gap:6px;">' + cells + '</div></div>';
+      }).join("");
+      document.getElementById("stamp-modal").classList.add("open");
+    }
 
-      function openCheckinModal() {
-        playTone("tap");
-        const box = document.getElementById("checkin-days");
-        const mod = ((state.streak - 1) % 7) + 1;
-        box.innerHTML = [1, 2, 3, 4, 5, 6, 7].map(function (d) {
-          const done = d <= mod;
-          return '<div style="width:54px;height:64px;border-radius:14px;border:2px solid ' + (done ? '#ff6b9d' : '#dee2e6') + ';background:' + (done ? '#fff0f6' : '#f8f9fa') + ';display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;">' +
-            '<span style="font-size:0.75rem;">第' + d + '天</span><span style="font-size:1.3rem;">' + (done ? '💮' : '⚪') + '</span></div>';
-        }).join("");
-        document.getElementById("checkin-modal").classList.add("open");
-      }
+    function openCheckinModal() {
+      playTone("tap");
+      const box = document.getElementById("checkin-days");
+      const mod = ((state.streak - 1) % 7) + 1;
+      box.innerHTML = [1, 2, 3, 4, 5, 6, 7].map(function (d) {
+        const done = d <= mod;
+        return '<div style="width:54px;height:64px;border-radius:14px;border:2px solid ' + (done ? '#ff6b9d' : '#dee2e6') + ';background:' + (done ? '#fff0f6' : '#f8f9fa') + ';display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;">' +
+          '<span style="font-size:0.75rem;">第' + d + '天</span><span style="font-size:1.3rem;">' + (done ? '💮' : '⚪') + '</span></div>';
+      }).join("");
+      document.getElementById("checkin-modal").classList.add("open");
+    }
 
-      function openDragonHallModal() {
-        playTone("tap");
-        const box = document.getElementById("hall-list");
-        if (state.graduated === 0) {
-          box.innerHTML = '<p style="color:#868e96;">目前還沒有畢業的神龍王，繼續練寫生字收集星星吧！</p>';
-        } else {
-          const items = [];
-          for (let i = 0; i < state.graduated; i++) {
-            items.push('<div style="padding:12px 16px;border-radius:16px;background:#fff9db;border:2px solid #ffe066;font-weight:800;"><div style="font-size:2.2rem;">🐲</div><div>第 ' + (i + 1) + ' 代聖龍王</div></div>');
-          }
-          box.innerHTML = items.join("");
+    function openDragonHallModal() {
+      playTone("tap");
+      const box = document.getElementById("hall-list");
+      if (state.graduated === 0) {
+        box.innerHTML = '<p style="color:#868e96;">目前還沒有畢業的神龍王，繼續練寫生字收集星星吧！</p>';
+      } else {
+        const items = [];
+        for (let i = 0; i < state.graduated; i++) {
+          items.push('<div style="padding:12px 16px;border-radius:16px;background:#fff9db;border:2px solid #ffe066;font-weight:800;"><div style="font-size:2.2rem;">🐲</div><div>第 ' + (i + 1) + ' 代聖龍王</div></div>');
         }
-        document.getElementById("hall-modal").classList.add("open");
+        box.innerHTML = items.join("");
       }
+      document.getElementById("hall-modal").classList.add("open");
+    }
 
-      document.getElementById("btn-start-audio").addEventListener("click", startAdventureWithAudio);
-      document.getElementById("btn-greeting").addEventListener("click", speakGreeting);
-      document.getElementById("btn-checkin").addEventListener("click", openCheckinModal);
-      document.getElementById("btn-hall").addEventListener("click", openDragonHallModal);
-      document.getElementById("btn-feed").addEventListener("click", feedDino);
-      document.getElementById("btn-stampbook").addEventListener("click", openStampBookModal);
-
-      document.querySelectorAll(".mode-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          switchMode(btn.getAttribute("data-mode"));
-        });
-      });
-
-      document.getElementById("btn-animate").addEventListener("click", function () {
-        if (!writer) return;
-        playTone("tap");
-        writer.animateCharacter({ onComplete: function () { startQuizStroke(); } });
-      });
-      document.getElementById("btn-reset").addEventListener("click", function () {
-        playTone("tap");
-        initHanziWriter(LESSONS[currentLessonIdx].chars[currentCharIdx].ch);
-      });
-      document.getElementById("btn-next").addEventListener("click", function () {
-        playTone("tap");
-        const lesson = LESSONS[currentLessonIdx];
-        currentCharIdx = (currentCharIdx + 1) % lesson.chars.length;
-        renderCharSelector();
-        loadCurrentChar(true);
-      });
-      document.getElementById("btn-speak-char").addEventListener("click", function () {
-        const item = LESSONS[currentLessonIdx].chars[currentCharIdx];
-        speakText(item.ch + "，" + item.words.join("、"));
-      });
-      document.getElementById("btn-quiz-replay").addEventListener("click", playQuizPrompt);
-
-      document.getElementById("btn-close-stamp").addEventListener("click", function () {
-        document.getElementById("stamp-modal").classList.remove("open");
-      });
-      document.getElementById("btn-close-checkin").addEventListener("click", function () {
-        document.getElementById("checkin-modal").classList.remove("open");
-      });
-      document.getElementById("btn-close-hall").addEventListener("click", function () {
-        document.getElementById("hall-modal").classList.remove("open");
-      });
-
-      ["stamp-modal", "checkin-modal", "hall-modal"].forEach(function (id) {
-        const el = document.getElementById(id);
-        el.addEventListener("click", function (e) {
-          if (e.target === el) el.classList.remove("open");
-        });
-      });
-
-      updateTopAndPetUI();
-      renderLessons();
-      renderCharSelector();
-      loadCurrentChar(false);
-    })();
+    updateTopAndPetUI();
+    renderLessons();
+    renderCharSelector();
+    loadCurrentChar(false);
   </script>
 </body>
 </html>
