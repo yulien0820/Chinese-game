@@ -633,7 +633,8 @@
     function splitSpeechChunks(text) {
       const raw = String(text || "").trim();
       if (!raw) return [];
-      const parts = raw.split(/([，。！？、；：!?,.\u000a]+)/);
+      const parts = raw.split(/([，。！？、；：!?,.
+]+)/);
       const chunks = [];
       let buf = "";
       for (let i = 0; i < parts.length; i++) {
