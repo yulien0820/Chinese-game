@@ -600,53 +600,31 @@
       pickBestTwVoice();
     }
 
+    // 音訊解鎖：只處理 Web Audio，不用靜音音檔佔用人聲播放器
     function unlockAudioHardware() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) {
-          if (!audioCtx) audioCtx = new AC();
-          if (audioCtx.state === "suspended") {
-            audioCtx.resume();
-          }
-          const buf = audioCtx.createBuffer(1, 1, 22050);
-          const src = audioCtx.createBufferSource();
-          src.buffer = buf;
-          src.connect(audioCtx.destination);
-          src.start(0);
+        if (!AC) return;
+        if (!audioCtx || audioCtx.state === "closed") audioCtx = new AC();
+        if (audioCtx.state === "suspended") {
+          const resumeResult = audioCtx.resume();
+          if (resumeResult && typeof resumeResult.catch === "function") resumeResult.catch(function () {});
         }
       } catch (e) {}
-
-      if (!mediaUnlocked) {
-        mediaUnlocked = true;
-        try {
-          const player = document.getElementById("tts-audio-player");
-          if (player) {
-            player.src = SILENT_WAV;
-            player.volume = 0.01;
-            const p = player.play();
-            if (p && typeof p.then === "function") {
-              p.then(function () {
-                player.pause();
-                player.volume = 1.0;
-              }).catch(function () {
-                player.volume = 1.0;
-              });
-            }
-          }
-        } catch (e) {}
-      }
     }
 
     ["touchstart", "pointerdown", "click"].forEach(function (evName) {
       document.addEventListener(evName, unlockAudioHardware, { passive: true });
     });
 
-    // 特效音：按鈕點擊（tap）、寫對一筆/完成/答對（win）、筆順寫錯/答錯（err）
+    // 特效音使用獨立的 Web Audio Context，不與姐姐的人聲播放器共用
     function playMagicSfx(type) {
       try {
         unlockAudioHardware();
-        if (!audioCtx) return;
+        if (!audioCtx || audioCtx.state === "closed") return;
+
         const runSynth = function () {
+          if (!audioCtx || audioCtx.state !== "running") return;
           const now = audioCtx.currentTime;
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -682,8 +660,8 @@
         };
 
         if (audioCtx.state === "suspended") {
-          audioCtx.resume().then(runSynth).catch(runSynth);
-        } else {
+          audioCtx.resume().then(runSynth).catch(function () {});
+        } else if (audioCtx.state === "running") {
           runSynth();
         }
       } catch (e) {}
@@ -778,20 +756,28 @@
             return;
           }
           const url = endpoints[epIdx++];
-          audio.onended = function () { if (seq === speechSeq) playIdx(i + 1); };
-          audio.onerror = function () { if (seq === speechSeq) tryEndpoint(); };
+          let failureHandled = false;
+          function handleFailure() {
+            if (failureHandled || seq !== speechSeq) return;
+            failureHandled = true;
+            audio.onended = null;
+            audio.onerror = null;
+            if (epIdx < endpoints.length) tryEndpoint();
+            else fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
+          }
+          audio.onended = function () {
+            if (seq === speechSeq) {
+              audio.onerror = null;
+              playIdx(i + 1);
+            }
+          };
+          audio.onerror = handleFailure;
           audio.volume = 1.0;
           audio.src = url;
           audio.playbackRate = playRate;
-          const prom = audio.play();
-          if (prom && typeof prom.catch === "function") {
-            prom.catch(function () {
-              if (seq === speechSeq) {
-                if (epIdx < endpoints.length) tryEndpoint();
-                else fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
-              }
-            });
-          }
+          let prom;
+          try { prom = audio.play(); } catch (e) { handleFailure(); return; }
+          if (prom && typeof prom.catch === "function") prom.catch(handleFailure);
         }
 
         tryEndpoint();
