@@ -17,247 +17,240 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: var(--font-ui);
-      background: linear-gradient(135deg, #fff5f8 0%, #f0f4ff 50%, #f2fff9 100%);
-      color: #1e293b;
+      background: linear-gradient(180deg, #fffdf5 0%, #fff7e6 50%, #fffdf7 100%);
+      color: #2d3748;
       min-height: 100vh;
       margin: 0;
     }
     .kai-font { font-family: var(--font-kai); }
     .tian-grid {
       position: relative;
-      background-color: #fffdfd;
+      background-color: #ffffff;
       background-image:
-        linear-gradient(to right, transparent 49.5%, rgba(244, 63, 94, 0.28) 49.5%, rgba(244, 63, 94, 0.28) 50.5%, transparent 50.5%),
-        linear-gradient(to bottom, transparent 49.5%, rgba(244, 63, 94, 0.28) 49.5%, rgba(244, 63, 94, 0.28) 50.5%, transparent 50.5%),
+        linear-gradient(to right, transparent 49.5%, rgba(244, 63, 94, 0.35) 49.5%, rgba(244, 63, 94, 0.35) 50.5%, transparent 50.5%),
+        linear-gradient(to bottom, transparent 49.5%, rgba(244, 63, 94, 0.35) 49.5%, rgba(244, 63, 94, 0.35) 50.5%, transparent 50.5%),
         linear-gradient(45deg, transparent 49.6%, rgba(244, 63, 94, 0.14) 49.6%, rgba(244, 63, 94, 0.14) 50.4%, transparent 50.4%),
         linear-gradient(-45deg, transparent 49.6%, rgba(244, 63, 94, 0.14) 49.6%, rgba(244, 63, 94, 0.14) 50.4%, transparent 50.4%);
     }
     @keyframes floatSlow {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-4px); }
     }
     .float-anim { animation: floatSlow 2.6s ease-in-out infinite; }
     @keyframes popScale {
-      0% { transform: scale(0.85); opacity: 0; }
+      0% { transform: scale(0.9); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-    .pop-anim { animation: popScale 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+    .pop-anim { animation: popScale 0.25s ease-out; }
   </style>
 </head>
-<body class="pb-14">
+<body class="pb-12">
 
-  <!-- 全局同步共用台灣女聲播放器（專為 iPadOS / iPhone / LINE 瀏覽器零延遲發聲設計） -->
+  <!-- 全局同步共用台灣女聲播放器（點擊當下同步啟動，iPadOS / LINE 瀏覽器零延遲發聲） -->
   <audio id="tts-audio-player" playsinline referrerpolicy="no-referrer" style="display:none;"></audio>
 
-  <!-- 開場一鍵解鎖人聲遮罩 -->
-  <div id="welcome-voice-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-7 text-center shadow-2xl border-4 border-pink-200 pop-anim">
-      <div class="text-6xl mb-3 float-anim">🏰🦖✨</div>
-      <h2 class="text-2xl font-black text-pink-600 mb-2">國字魔法冒險島</h2>
-      <p class="text-slate-600 text-sm leading-relaxed mb-5">
-        康軒一上 · 第一課～第四課（完整 47 生字）<br/>
-        學校標準標楷體描寫 ＋ 溫柔大姊姊真人發音陪讀
-      </p>
-      <button type="button" onclick="unlockAndEnter()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-black text-lg shadow-lg shadow-pink-500/30 active:scale-95 transition">
-        🚀 點擊進入冒險島（開啟大姊姊人聲）
-      </button>
+  <!-- 頂部卡片區（完全還原截圖暖米黃卡片版面） -->
+  <div class="max-w-4xl mx-auto px-3 sm:px-5 pt-3">
+    <div class="bg-[#fffef9] rounded-3xl p-4 sm:p-5 shadow-sm border border-amber-200/80">
+      <!-- 第一列：Logo + 標題 + 右側試聽按鈕 -->
+      <div class="flex items-center justify-between gap-3 pb-3 border-b border-amber-100">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="goHome()">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center kai-font text-2xl font-black shadow-sm">
+            字
+          </div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-black text-slate-800 leading-tight">🏰 國字魔法冒險島</h1>
+            <p id="header-sub-info" class="text-xs font-bold text-amber-700">第一課《拍拍手》· 共 9 個生字</p>
+          </div>
+        </div>
+
+        <button type="button" onclick="testSisterVoice()" class="px-4 py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-black text-xs sm:text-sm shadow-sm active:scale-95 transition flex items-center gap-1.5">
+          🔊 試聽
+        </button>
+      </div>
+
+      <!-- 第二列：恐龍蛋養成進度條 + 餵食按鈕 -->
+      <div class="flex flex-wrap items-center justify-between gap-3 py-3">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <div id="dino-avatar" class="w-14 h-14 rounded-full bg-amber-50 border-2 border-amber-300 flex items-center justify-center text-3xl float-anim">
+              🥚
+            </div>
+            <span id="dino-lv-pill" class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.2 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-sm">
+              Lv.1
+            </span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="dino-stage-name" class="font-black text-sm sm:text-base text-slate-800">神祕斑點龍蛋</span>
+              <span id="dino-egg-badge" class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+                第 1 顆龍蛋
+              </span>
+            </div>
+            <div class="flex items-center gap-2 mt-1.5">
+              <div class="w-32 sm:w-44 h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                <div id="dino-xp-bar" class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300" style="width: 33%;"></div>
+              </div>
+              <span id="dino-xp-text" class="text-xs font-black text-slate-600">1/3 星星</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" onclick="feedDinoStar()" class="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white font-black text-xs sm:text-sm shadow-sm active:scale-95 transition flex items-center gap-1.5">
+          🍖 餵食 <span id="feed-remain-pill" class="px-2 py-0.5 rounded-full bg-white/90 text-orange-600 text-xs font-black">剩1顆</span>
+        </button>
+      </div>
+
+      <!-- 第三列：恐龍圖鑑 1/12 ＋ 生字集章 0/47 雙大按鈕 -->
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <button type="button" onclick="openDinoDexModal()" class="py-2.5 px-4 rounded-2xl bg-amber-50/90 hover:bg-amber-100 border border-amber-200 text-amber-900 font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 active:scale-95 transition">
+          🥚 恐龍圖鑑 <span id="dex-unlocked-pill" class="px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-900 text-xs">1/12</span>
+        </button>
+        <button type="button" onclick="openStampModal()" class="py-2.5 px-4 rounded-2xl bg-sky-50/90 hover:bg-sky-100 border border-sky-200 text-sky-900 font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 active:scale-95 transition">
+          🏆 生字集章 <span id="stamp-count-pill" class="px-2 py-0.5 rounded-full bg-sky-200/80 text-sky-900 text-xs">0/47</span>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- 頂部導覽列 -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-pink-100 shadow-sm">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="goHome()">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 to-amber-400 text-white flex items-center justify-center kai-font text-2xl font-black shadow-md">
-          字
-        </div>
-        <div>
-          <h1 class="text-lg sm:text-xl font-black text-slate-800 leading-tight">🏰 國字魔法冒險島</h1>
-          <p class="text-xs text-slate-500 font-medium">康軒一上 · 第一課～第四課 (47字)</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2 flex-wrap">
-        <button type="button" onclick="testSisterVoice()" class="px-3 py-1.5 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-200 text-xs sm:text-sm font-bold flex items-center gap-1 active:scale-95 transition">
-          🔊 試聽大姊姊聲音
-        </button>
-        <button type="button" onclick="openStampModal()" class="px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs sm:text-sm font-bold flex items-center gap-1 active:scale-95 transition">
-          🏆 集章冊 (<span id="top-mastered">0</span>/47)
-        </button>
-        <div class="px-3.5 py-1.5 rounded-full bg-yellow-100 text-amber-800 border border-yellow-300 text-xs sm:text-sm font-black flex items-center gap-1">
-          ⭐ <span id="top-stars">0</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- 恐龍蛋＆12 階段神獸養成狀態條 -->
-  <section class="max-w-5xl mx-auto px-4 mt-4">
-    <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border border-pink-100 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3.5">
-        <div id="dino-avatar" class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-50 to-indigo-50 border-2 border-pink-200 flex items-center justify-center text-4xl float-anim">
-          🥚
-        </div>
-        <div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <span id="dino-stage-name" class="font-black text-base sm:text-lg text-slate-800">神祕斑點龍蛋</span>
-            <span id="dino-egg-badge" class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200 text-xs font-bold">
-              第 1 顆龍蛋 · Lv.1
-            </span>
-          </div>
-          <div class="flex items-center gap-2.5 mt-1.5">
-            <div class="w-36 sm:w-48 h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-              <div id="dino-xp-bar" class="h-full bg-gradient-to-r from-pink-500 to-amber-400 transition-all duration-300" style="width: 0%;"></div>
-            </div>
-            <span id="dino-xp-text" class="text-xs font-bold text-slate-500">0/3 星星</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2 flex-wrap">
-        <button type="button" onclick="feedDinoStar()" class="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-slate-900 font-black text-xs sm:text-sm shadow-sm active:scale-95 transition">
-          🍖 餵食進化 (1⭐)
-        </button>
-        <button type="button" onclick="openDinoDexModal()" class="px-3.5 py-2 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-xs sm:text-sm active:scale-95 transition">
-          🥚 神獸圖鑑 (<span id="dex-unlocked">1</span>/12)
-        </button>
-      </div>
-    </div>
-  </section>
-
   <!-- 首頁：四大課別選擇大廳 -->
-  <main id="home-view" class="max-w-5xl mx-auto px-4 mt-6">
-    <div class="text-center mb-6">
-      <span class="inline-block px-4 py-1 rounded-full bg-pink-100 text-pink-700 text-xs sm:text-sm font-black mb-2">
-        ✨ 學校標準標楷體描寫 ＋ 溫柔大姊姊陪讀 ✨
-      </span>
-      <h2 class="text-2xl sm:text-3xl font-black text-slate-800">今天要挑戰哪一課呢？</h2>
+  <main id="home-view" class="max-w-4xl mx-auto px-3 sm:px-5 mt-5 hidden">
+    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-amber-200/70">
+      <div class="text-center mb-5">
+        <span class="inline-block px-4 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-xs sm:text-sm font-black mb-2">
+          ✨ 學校標準標楷體描寫 ＋ 溫柔大姊姊陪讀 ✨
+        </span>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-800">今天要挑戰哪一課呢？</h2>
+      </div>
+      <div id="lesson-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </div>
-
-    <div id="lesson-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
   </main>
 
-  <!-- 課別練習主舞台 -->
-  <main id="lesson-view" class="max-w-5xl mx-auto px-4 mt-5 hidden">
-    <!-- 返回與課名標題 -->
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-      <button type="button" onclick="goHome()" class="px-4 py-2 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-sm shadow-sm active:scale-95 transition">
-        ⬅️ 返回選課大廳
+  <!-- 課別練習主舞台（預設直接進入第一課《拍拍手》描紅畫面，與截圖完全一致） -->
+  <main id="lesson-view" class="max-w-4xl mx-auto px-3 sm:px-5 mt-4 space-y-4">
+    <!-- 課別切換橫條：換課別 ｜ 第一課《拍拍手》 ｜ 全部生字 -->
+    <div class="bg-white rounded-2xl px-4 py-2.5 shadow-sm border border-amber-200/70 flex items-center justify-between gap-2">
+      <button type="button" onclick="goHome()" class="px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-black text-xs sm:text-sm active:scale-95 transition">
+        🏠 換課別
       </button>
-      <span id="active-lesson-banner" class="px-4 py-1.5 rounded-full bg-pink-500 text-white font-black text-sm shadow-sm">
+      <span id="active-lesson-banner" class="font-black text-sm sm:text-base text-slate-800">
         第一課《拍拍手》
       </span>
+      <button type="button" onclick="openStampModal()" class="px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 font-black text-xs sm:text-sm active:scale-95 transition">
+        📖 全部生字
+      </button>
     </div>
 
-    <!-- 四大關卡模式切換列 -->
-    <nav class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
-      <button type="button" id="nav-write" onclick="switchTab('write')" class="py-3 px-3 rounded-2xl bg-pink-500 text-white font-black text-sm shadow-md transition">
-        ✍️ 精準筆順描紅
+    <!-- 四大關卡模式分頁：魔法筆順 ｜ 部件拼圖 ｜ 偵探找不同 ｜ 聽寫大魔王 -->
+    <nav class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+      <button type="button" id="nav-write" onclick="switchTab('write')" class="py-2.5 px-3 rounded-2xl bg-rose-500 text-white font-black text-xs sm:text-sm shadow-sm transition">
+        🖌️ 魔法筆順
       </button>
-      <button type="button" id="nav-puzzle" onclick="switchTab('puzzle')" class="py-3 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-sm hover:bg-pink-50 transition">
-        🧩 部件拼圖廚師
+      <button type="button" id="nav-puzzle" onclick="switchTab('puzzle')" class="py-2.5 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-xs sm:text-sm hover:bg-rose-50 transition">
+        🧩 部件拼圖
       </button>
-      <button type="button" id="nav-lookalike" onclick="switchTab('lookalike')" class="py-3 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-sm hover:bg-pink-50 transition">
-        🔍 形近字大挑戰
+      <button type="button" id="nav-lookalike" onclick="switchTab('lookalike')" class="py-2.5 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-xs sm:text-sm hover:bg-rose-50 transition">
+        🔍 偵探找不同
       </button>
-      <button type="button" id="nav-dictation" onclick="switchTab('dictation')" class="py-3 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-sm hover:bg-pink-50 transition">
+      <button type="button" id="nav-dictation" onclick="switchTab('dictation')" class="relative py-2.5 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-xs sm:text-sm hover:bg-rose-50 transition">
         👑 聽寫大魔王
+        <span class="absolute -top-2 right-2 px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-900 text-[9px] font-black">最終考驗</span>
       </button>
     </nav>
 
-    <!-- 關卡 1：精準筆順描紅 ＋ 打敗迷糊小怪獸 -->
-    <section id="sec-write" class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-pink-100">
+    <!-- 關卡 1：魔法筆順（與截圖 100% 一致） -->
+    <section id="sec-write" class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-amber-200/70">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <span class="text-sm font-black text-slate-700">👇 點選要練習的生字（學校標楷體）：</span>
-        <span class="text-xs font-bold text-pink-600 bg-pink-50 px-3 py-1 rounded-full">寫完打敗怪獸 +1 ⭐ 星星！</span>
+        <span class="text-xs sm:text-sm font-black text-slate-700">👇 點選要練習的生字（學校標楷體）：</span>
+        <span class="text-xs font-black text-rose-500">寫完打敗怪獸 +1 ⭐ 星星！</span>
       </div>
 
       <!-- 生字按鈕列 -->
       <div id="lesson-char-pills" class="flex flex-wrap gap-2 pb-4 mb-5 border-b border-dashed border-slate-200"></div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <!-- 左側：生字解析與迷糊小怪獸 -->
-        <div class="lg:col-span-5 space-y-4">
-          <div class="bg-amber-50/70 rounded-2xl p-4 border border-amber-200">
-            <div class="flex items-center gap-4">
-              <div id="w-zhuyin" class="px-3.5 py-2 rounded-2xl bg-indigo-600 text-white font-black text-2xl shadow-sm">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+        <!-- 左側：注音部首卡片 ＋ 敲鼓小怪獸 -->
+        <div class="md:col-span-5 space-y-4">
+          <div class="bg-[#fffdf2] rounded-2xl p-4 border-2 border-amber-200">
+            <div class="flex items-center gap-3.5">
+              <div id="w-zhuyin" class="px-3.5 py-2 rounded-2xl bg-white border-2 border-rose-200 text-rose-600 font-black text-2xl shadow-xs">
                 ㄆㄞ
               </div>
               <div class="space-y-1">
-                <div class="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700">
-                  <span class="px-2 py-0.5 rounded bg-white border border-amber-200">部首：<span id="w-radical" class="text-rose-600">手</span>部</span>
-                  <span class="px-2 py-0.5 rounded bg-white border border-amber-200">總筆畫：<span id="w-strokes" class="text-indigo-600">8</span> 畫</span>
+                <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span class="px-2 py-0.5 rounded-md bg-amber-100/80 text-amber-900">部首：<span id="w-radical">手</span>部</span>
+                  <span class="px-2 py-0.5 rounded-md bg-sky-100/80 text-sky-900">總筆畫：<span id="w-strokes">8</span> 畫</span>
                 </div>
-                <div class="text-sm font-black text-slate-800">造詞：<span id="w-words" class="text-indigo-700">拍拍手、拍球</span></div>
+                <div class="text-sm font-black text-slate-800">造詞：<span id="w-words">拍拍手、拍球</span></div>
               </div>
             </div>
-            <div id="w-tip" class="mt-3 text-xs sm:text-sm font-bold text-amber-900 bg-white/90 p-2.5 rounded-xl border border-amber-200">
-              💡 寫字小幫手：左窄右寬，「白」的撇要短
+            <div id="w-tip" class="mt-3 text-xs font-bold text-slate-600 bg-white p-2.5 rounded-xl border border-amber-100 leading-relaxed">
+              💡 寫字小幫手：左窄右寬，「白」裡面的橫畫要靠左不碰右邊。
             </div>
           </div>
 
-          <!-- 迷糊小怪獸血條卡片 -->
-          <div class="bg-purple-50/80 rounded-2xl p-4 border border-purple-200 text-center">
+          <!-- 敲鼓小怪獸血條卡片 -->
+          <div class="bg-purple-50/70 rounded-2xl p-4 border-2 border-purple-200 text-center">
             <div class="flex items-center justify-between text-xs font-black text-purple-800 mb-1.5">
-              <span>👾 迷糊小怪獸</span>
+              <span>👾 <span id="monster-name">敲鼓小怪獸</span></span>
               <span>體力：<span id="monster-hp-text">100%</span></span>
             </div>
-            <div class="w-full h-3 bg-white rounded-full overflow-hidden border border-purple-200 mb-3">
-              <div id="monster-hp-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300" style="width: 100%;"></div>
+            <div class="w-full h-2.5 bg-white rounded-full overflow-hidden border border-purple-200 mb-3">
+              <div id="monster-hp-bar" class="h-full bg-gradient-to-r from-rose-500 to-purple-500 transition-all duration-300" style="width: 100%;"></div>
             </div>
-            <div id="monster-emoji" class="text-5xl my-2 float-anim">👾</div>
-            <p id="monster-speech" class="text-xs sm:text-sm font-bold text-purple-900 bg-white rounded-xl p-2.5 border border-purple-100">
+            <div id="monster-emoji" class="text-5xl my-2 float-anim">🥁</div>
+            <p id="monster-speech" class="text-xs font-bold text-purple-900 bg-white rounded-xl p-2.5 border border-purple-100">
               「按照正確筆順一筆一畫描寫，才能打敗我喔！」
             </p>
           </div>
         </div>
 
-        <!-- 右側：田字格手寫板 -->
-        <div class="lg:col-span-7 flex flex-col items-center">
-          <div class="relative rounded-3xl border-4 border-rose-300 shadow-lg overflow-hidden tian-grid" style="width: 280px; height: 280px;">
+        <!-- 右側：田字格手寫板 ＋ 四顆彩色操作按鈕 -->
+        <div class="md:col-span-7 flex flex-col items-center">
+          <div class="relative rounded-3xl border-4 border-rose-300 shadow-md overflow-hidden tian-grid" style="width: 276px; height: 276px;">
             <div id="hanzi-writer-target" class="w-full h-full"></div>
 
-            <span id="stroke-progress-badge" class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-white/90 border border-rose-200 text-xs font-black text-rose-600 pointer-events-none">
-              描紅 0 / 8 筆
+            <span id="stroke-progress-badge" class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-[11px] font-black text-rose-600 pointer-events-none">
+              描紅 0/8 筆
             </span>
-            <span class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-indigo-50/95 border border-indigo-200 text-xs font-bold text-indigo-700 pointer-events-none">
+            <span id="mode-corner-badge" class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-[11px] font-bold text-amber-800 pointer-events-none">
               🏫 精準筆順
             </span>
 
             <!-- 完成單字勝利覆蓋層 -->
-            <div id="write-win-overlay" class="hidden absolute inset-0 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center pop-anim">
+            <div id="write-win-overlay" class="hidden absolute inset-0 bg-white/95 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center pop-anim">
               <div class="text-5xl mb-1">🎉</div>
               <h3 class="text-xl font-black text-rose-600">太厲害了！打敗怪獸！</h3>
               <p class="text-sm font-bold text-slate-700 mt-1">獲得 <strong class="text-amber-600">+1 ⭐</strong> 星星飼料！</p>
               <p id="write-next-msg" class="text-xs text-slate-500 mt-2 mb-3"></p>
               <div class="flex gap-2">
                 <button type="button" onclick="resetCurrentStroke()" class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">🔄 再寫一次</button>
-                <button type="button" onclick="goNextChar()" class="px-4 py-2 rounded-xl bg-pink-500 text-white font-black text-xs shadow">➡️ 下一個生字</button>
+                <button type="button" onclick="goNextChar()" class="px-4 py-2 rounded-xl bg-rose-500 text-white font-black text-xs shadow">➡️ 下一個生字</button>
               </div>
             </div>
           </div>
 
-          <!-- 控制按鈕列 -->
-          <div class="flex flex-wrap justify-center gap-2.5 mt-4">
-            <button type="button" onclick="speakCurrentLessonChar()" class="px-4 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-black text-sm shadow-md shadow-pink-500/20 active:scale-95 transition">
-              🔊 聽大姊姊唸
+          <!-- 四顆按鈕：唸字與造詞（綠）、示範筆順（黃）、盲寫挑戰（藍灰）、重寫（天藍） -->
+          <div class="flex flex-wrap justify-center gap-2 mt-4">
+            <button type="button" onclick="speakCurrentLessonChar()" class="px-3.5 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-sm active:scale-95 transition">
+              🔊 唸字與造詞
             </button>
-            <button type="button" onclick="animateCurrentStroke()" class="px-4 py-2.5 rounded-2xl bg-indigo-500 hover:bg-indigo-600 text-white font-black text-sm shadow-md shadow-indigo-500/20 active:scale-95 transition">
-              🎬 筆順示範
+            <button type="button" onclick="animateCurrentStroke()" class="px-3.5 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-900 font-black text-xs sm:text-sm shadow-sm active:scale-95 transition">
+              👀 示範筆順
             </button>
-            <button type="button" onclick="resetCurrentStroke()" class="px-3.5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm active:scale-95 transition">
+            <button type="button" id="btn-blind-toggle" onclick="toggleBlindWrite()" class="px-3.5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-black text-xs sm:text-sm active:scale-95 transition">
+              🙈 盲寫挑戰
+            </button>
+            <button type="button" onclick="resetCurrentStroke()" class="px-3.5 py-2.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-black text-xs sm:text-sm shadow-sm active:scale-95 transition">
               🔄 重寫
-            </button>
-            <button type="button" onclick="goNextChar()" class="px-3.5 py-2.5 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-sm active:scale-95 transition">
-              ➡️ 下一字
             </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 關卡 2：國字部件拼圖小廚師 -->
-    <section id="sec-puzzle" class="hidden bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-pink-100">
+    <!-- 關卡 2：部件拼圖 -->
+    <section id="sec-puzzle" class="hidden bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-amber-200/70">
       <div class="text-center mb-5">
         <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-black">字形結構與認字</span>
         <h2 class="text-xl sm:text-2xl font-black text-slate-800 mt-2">🧩 國字部件拼圖小廚師</h2>
@@ -268,27 +261,27 @@
         <div class="md:col-span-5 bg-amber-50 rounded-2xl p-5 border-2 border-amber-200 text-center">
           <div class="text-5xl mb-2">🐰</div>
           <span class="text-xs font-black text-amber-700 bg-white px-3 py-1 rounded-full border border-amber-200">客人點餐訂單</span>
-          <div id="pz-zhuyin" class="text-3xl font-black text-indigo-600 mt-3">ㄆㄞ</div>
+          <div id="pz-zhuyin" class="text-3xl font-black text-rose-600 mt-3">ㄆㄞ</div>
           <div id="pz-words" class="text-base font-bold text-slate-700 mt-1">拍拍手、拍球</div>
           <div id="pz-hint" class="mt-3 text-xs font-bold text-amber-900 bg-white p-2.5 rounded-xl border border-amber-200">
             提示：左邊是「扌」，右邊是「白」喔！
           </div>
-          <button type="button" onclick="speakPuzzleOrder()" class="mt-3 px-4 py-2 rounded-xl bg-pink-500 text-white font-black text-xs shadow">
+          <button type="button" onclick="speakPuzzleOrder()" class="mt-3 px-4 py-2 rounded-xl bg-emerald-500 text-white font-black text-xs shadow-sm">
             🔊 聽客人點餐
           </button>
         </div>
 
         <div class="md:col-span-7 text-center">
           <div class="flex items-center justify-center gap-3 my-4">
-            <div id="pz-slot-1" onclick="clearPuzzleSlot(1)" class="w-24 h-24 rounded-2xl border-3 border-dashed border-indigo-300 bg-indigo-50/50 flex items-center justify-center kai-font text-4xl font-bold text-indigo-700 cursor-pointer">
+            <div id="pz-slot-1" onclick="clearPuzzleSlot(1)" class="w-24 h-24 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/50 flex items-center justify-center kai-font text-4xl font-bold text-amber-800 cursor-pointer">
               <span class="text-xs font-sans text-slate-400">零件 1</span>
             </div>
             <span class="text-2xl font-black text-slate-400">＋</span>
-            <div id="pz-slot-2" onclick="clearPuzzleSlot(2)" class="w-24 h-24 rounded-2xl border-3 border-dashed border-indigo-300 bg-indigo-50/50 flex items-center justify-center kai-font text-4xl font-bold text-indigo-700 cursor-pointer">
+            <div id="pz-slot-2" onclick="clearPuzzleSlot(2)" class="w-24 h-24 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/50 flex items-center justify-center kai-font text-4xl font-bold text-amber-800 cursor-pointer">
               <span class="text-xs font-sans text-slate-400">零件 2</span>
             </div>
             <span class="text-2xl font-black text-slate-400">＝</span>
-            <div id="pz-result" class="w-24 h-24 rounded-2xl border-3 border-pink-300 bg-pink-50 flex items-center justify-center kai-font text-5xl font-bold text-pink-600">
+            <div id="pz-result" class="w-24 h-24 rounded-2xl border-2 border-rose-300 bg-rose-50 flex items-center justify-center kai-font text-5xl font-bold text-rose-600">
               ❓
             </div>
           </div>
@@ -302,15 +295,15 @@
       </div>
     </section>
 
-    <!-- 關卡 3：形近字辨識挑戰 -->
-    <section id="sec-lookalike" class="hidden bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-pink-100">
+    <!-- 關卡 3：偵探找不同 -->
+    <section id="sec-lookalike" class="hidden bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-amber-200/70">
       <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
         <div>
-          <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-black">🔍 形近字辨識挑戰（標楷體）</span>
+          <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-black">🔍 形近字辨識挑戰（標楷體）</span>
           <div class="mt-2 flex items-center gap-2">
             <span class="text-sm font-bold text-slate-600">找出躲起來的：</span>
             <span id="la-target-char" class="kai-font text-4xl font-bold text-rose-600 bg-rose-50 px-3 py-0.5 rounded-xl border border-rose-200">左</span>
-            <button type="button" onclick="speakLookalikeTarget()" class="px-3 py-1.5 rounded-xl bg-pink-500 text-white font-bold text-xs">🔊 唸題目</button>
+            <button type="button" onclick="speakLookalikeTarget()" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-white font-bold text-xs">🔊 唸題目</button>
           </div>
         </div>
 
@@ -331,20 +324,18 @@
     </section>
 
     <!-- 關卡 4：聽寫大魔王 -->
-    <section id="sec-dictation" class="hidden bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-pink-100">
-      <!-- 未解鎖提示 -->
+    <section id="sec-dictation" class="hidden bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-amber-200/70">
       <div id="dict-locked" class="hidden text-center py-8 px-4">
         <div class="text-5xl mb-3">🔒😈📢</div>
         <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-black">聽寫大魔王封印中</span>
         <h3 class="text-xl font-black text-slate-800 mt-2">先把本課全部生字都練過一次吧！</h3>
         <p id="dict-locked-desc" class="text-sm text-slate-600 mt-1 mb-4">本課還有生字還沒完成描紅練習，點擊下方生字就能直接去練習喔！</p>
         <div id="dict-missing-chars" class="flex flex-wrap justify-center gap-2 mb-5"></div>
-        <button type="button" onclick="switchTab('write')" class="px-5 py-2.5 rounded-2xl bg-pink-500 text-white font-black text-sm shadow">
+        <button type="button" onclick="switchTab('write')" class="px-5 py-2.5 rounded-2xl bg-rose-500 text-white font-black text-sm shadow">
           ✍️ 立刻去練寫生字
         </button>
       </div>
 
-      <!-- 聽寫挑戰主體 -->
       <div id="dict-active">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
           <span class="px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-black">🎧 本課最終聽寫考驗</span>
@@ -354,24 +345,16 @@
           </div>
         </div>
 
-        <div class="bg-slate-900 text-white rounded-2xl p-4 mb-5 flex items-center gap-3.5">
-          <div class="text-4xl">😈📢</div>
-          <div>
-            <div class="text-xs font-black text-amber-400">聽寫大魔王出題中：</div>
-            <p class="text-xs sm:text-sm text-slate-200 mt-0.5">「仔細聽大姊姊唸出的國字，憑記憶一筆一畫寫在田字格裡吧！」</p>
-          </div>
-        </div>
-
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-          <div class="md:col-span-5 bg-indigo-50/70 rounded-2xl p-5 border border-indigo-200 text-center space-y-3">
-            <span class="px-3 py-1 rounded-full bg-white text-indigo-700 text-xs font-black border border-indigo-200">🔮 神秘聽寫題目卡</span>
+          <div class="md:col-span-5 bg-[#fffdf2] rounded-2xl p-5 border-2 border-amber-200 text-center space-y-3">
+            <span class="px-3 py-1 rounded-full bg-white text-amber-800 text-xs font-black border border-amber-200">🔮 神秘聽寫題目卡</span>
             <div>
               <div class="text-xs text-slate-500 font-bold">注音提示</div>
-              <div id="dict-zhuyin" class="text-3xl font-black text-indigo-700 mt-0.5">ㄆㄞ</div>
+              <div id="dict-zhuyin" class="text-3xl font-black text-rose-600 mt-0.5">ㄆㄞ</div>
             </div>
             <div>
               <div class="text-xs text-slate-500 font-bold">詞語填空提示</div>
-              <div id="dict-blank" class="kai-font text-2xl font-bold text-slate-800 mt-0.5 bg-white py-2 px-3 rounded-xl border border-indigo-100">
+              <div id="dict-blank" class="kai-font text-2xl font-bold text-slate-800 mt-0.5 bg-white py-2 px-3 rounded-xl border border-amber-100">
                 ＿ 拍 手
               </div>
             </div>
@@ -379,59 +362,58 @@
               <span>筆畫數：<span id="dict-strokes" class="text-rose-600">8</span> 畫</span>
               <span>答對 <span class="text-amber-600">+2 ⭐</span></span>
             </div>
-            <button type="button" onclick="speakDictationPrompt()" class="w-full py-2.5 rounded-xl bg-pink-500 text-white font-black text-sm shadow">
+            <button type="button" onclick="speakDictationPrompt()" class="w-full py-2.5 rounded-xl bg-emerald-500 text-white font-black text-sm shadow-sm">
               🔊 再聽一次聽寫題目
             </button>
           </div>
 
           <div class="md:col-span-7 flex flex-col items-center">
-            <div class="relative rounded-3xl border-4 border-indigo-300 shadow-lg overflow-hidden tian-grid" style="width: 280px; height: 280px;">
+            <div class="relative rounded-3xl border-4 border-rose-300 shadow-md overflow-hidden tian-grid" style="width: 276px; height: 276px;">
               <div id="dict-writer-target" class="w-full h-full"></div>
-              <span id="dict-stroke-badge" class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-white/90 border border-indigo-200 text-xs font-black text-indigo-600 pointer-events-none">
-                聽寫 0 / 8 畫
+              <span id="dict-stroke-badge" class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-[11px] font-black text-rose-600 pointer-events-none">
+                聽寫 0/8 畫
               </span>
-              <span class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-amber-50/95 border border-amber-200 text-xs font-bold text-amber-700 pointer-events-none">
+              <span class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-[11px] font-bold text-amber-800 pointer-events-none">
                 🙈 盲寫挑戰
               </span>
 
               <div id="dict-win-overlay" class="hidden absolute inset-0 bg-white/95 flex flex-col items-center justify-center p-4 text-center pop-anim">
                 <div class="text-5xl mb-1">🌟</div>
-                <h3 class="text-xl font-black text-indigo-700">聽寫完全正確！</h3>
+                <h3 class="text-xl font-black text-rose-600">聽寫完全正確！</h3>
                 <p class="text-sm font-bold text-slate-700 mt-1">
                   你憑記憶寫出了「<span id="dict-revealed-char" class="kai-font text-rose-600 text-xl">拍</span>」，獲得 <strong class="text-amber-600">+2 ⭐</strong>！
                 </p>
-                <button type="button" onclick="nextDictationQuestion()" class="mt-4 px-5 py-2.5 rounded-2xl bg-indigo-600 text-white font-black text-sm shadow">
+                <button type="button" onclick="nextDictationQuestion()" class="mt-4 px-5 py-2.5 rounded-2xl bg-rose-500 text-white font-black text-sm shadow">
                   ➡️ 下一題聽寫
                 </button>
               </div>
             </div>
 
             <div class="flex gap-2.5 mt-4">
-              <button type="button" onclick="hintDictationStroke()" class="px-3.5 py-2 rounded-xl bg-amber-100 text-amber-800 font-bold text-xs">💡 偷看一筆提示</button>
-              <button type="button" onclick="resetDictationBoard()" class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">🔄 清除重寫</button>
+              <button type="button" onclick="hintDictationStroke()" class="px-3.5 py-2 rounded-xl bg-amber-400 text-slate-900 font-black text-xs">💡 偷看一筆提示</button>
+              <button type="button" onclick="resetDictationBoard()" class="px-3.5 py-2 rounded-xl bg-sky-500 text-white font-black text-xs">🔄 清除重寫</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 本課聽寫全破慶祝 -->
       <div id="dict-complete" class="hidden text-center py-8 px-4 pop-anim">
         <div class="text-6xl mb-3">👑🎉🦖</div>
         <h3 class="text-2xl font-black text-amber-600">太神啦！本課聽寫大魔王全破！</h3>
         <p id="dict-complete-desc" class="text-sm text-slate-600 max-w-md mx-auto mt-2 mb-5 leading-relaxed"></p>
         <div class="flex justify-center gap-3">
           <button type="button" onclick="startDictationMode(true)" class="px-4 py-2.5 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm">🔄 再挑戰一次</button>
-          <button type="button" onclick="goHome()" class="px-5 py-2.5 rounded-2xl bg-pink-500 text-white font-black text-sm shadow">🏝️ 返回選課大廳</button>
+          <button type="button" onclick="goHome()" class="px-5 py-2.5 rounded-2xl bg-rose-500 text-white font-black text-sm shadow">🏝️ 返回選課大廳</button>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- 彈窗 1：恐龍＆神獸進化圖鑑 (12 階段) -->
-  <div id="dino-dex-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this)this.classList.add('hidden')">
+  <!-- 彈窗 1：恐龍進化圖鑑 (12 階段) -->
+  <div id="dino-dex-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="if(event.target===this)this.classList.add('hidden')">
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl">
       <div class="flex items-center justify-between mb-2">
-        <h3 class="text-xl font-black text-indigo-700">🥚 恐龍＆神獸進化圖鑑 (12 階段)</h3>
+        <h3 class="text-xl font-black text-amber-700">🥚 恐龍＆神獸進化圖鑑 (12 階段)</h3>
         <button type="button" onclick="document.getElementById('dino-dex-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-slate-100 font-bold text-slate-600">✕</button>
       </div>
       <p class="text-xs text-slate-500 mb-4">每餵食 3 顆星星即可進化一階！Lv.2 起蛋殼退場，滿級還能孵化下一顆新蛋喔！</p>
@@ -439,11 +421,11 @@
     </div>
   </div>
 
-  <!-- 彈窗 2：國字魔法集章冊 (47 字) -->
-  <div id="stamp-book-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this)this.classList.add('hidden')">
+  <!-- 彈窗 2：生字集章冊 (47 字) -->
+  <div id="stamp-book-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="if(event.target===this)this.classList.add('hidden')">
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl">
       <div class="flex items-center justify-between mb-2">
-        <h3 class="text-xl font-black text-pink-600">🏆 國字魔法集章冊 (共 47 字)</h3>
+        <h3 class="text-xl font-black text-sky-700">🏆 國字魔法集章冊 (共 47 字)</h3>
         <button type="button" onclick="document.getElementById('stamp-book-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-slate-100 font-bold text-slate-600">✕</button>
       </div>
       <p class="text-xs text-slate-500 mb-4">點擊任何一個生字，就能直接跳過去練習寫字喔！</p>
@@ -456,7 +438,7 @@
     太棒了！
   </div>
 
-  <footer class="text-center text-xs font-bold text-slate-400 mt-10">
+  <footer class="text-center text-xs font-bold text-slate-400 mt-8">
     Created by Cinthya Sun ｜ 🏰 國字魔法冒險島（康軒一上 第一課～第四課）
   </footer>
 
@@ -471,15 +453,15 @@
         title: "👏 《拍拍手》",
         desc: "認識方向與人物：拍、手、左、右、你、他、也、上、下",
         chars: [
-          { ch: "拍", zy: "ㄆㄞ", rad: "手", strokes: 8, words: ["拍拍手", "拍球"], tip: "左窄右寬，「白」的撇要短", parts: ["扌", "白"], lookalikes: ["拍", "怕", "伯", "白"] },
-          { ch: "手", zy: "ㄕㄡˇ", rad: "手", strokes: 4, words: ["拍手", "小手"], tip: "第一筆是平撇，最後豎鉤在正中央", parts: ["手", "毛"], lookalikes: ["手", "毛", "牛", "午"] },
-          { ch: "左", zy: "ㄗㄨㄛˇ", rad: "工", strokes: 5, words: ["左手", "左邊"], tip: "第一筆橫要長，下面「工」字要站穩", parts: ["𠂇", "工"], lookalikes: ["左", "右", "在", "友"] },
-          { ch: "右", zy: "ㄧㄡˋ", rad: "口", strokes: 5, words: ["右手", "右邊"], tip: "第一筆橫短、撇長，下面寫「口」", parts: ["𠂇", "口"], lookalikes: ["右", "左", "石", "古"] },
-          { ch: "你", zy: "ㄋㄧˇ", rad: "人", strokes: 7, words: ["你好", "你們"], tip: "左邊單人旁，右邊「尔」中間是豎鉤", parts: ["亻", "尔"], lookalikes: ["你", "他", "們", "仔"] },
-          { ch: "他", zy: "ㄊㄚ", rad: "人", strokes: 5, words: ["他們", "他的"], tip: "右邊「也」的豎彎鉤要圓潤有力", parts: ["亻", "也"], lookalikes: ["他", "也", "地", "她"] },
-          { ch: "也", zy: "ㄧㄝˇ", rad: "乙", strokes: 3, words: ["也是", "也好"], tip: "第一筆橫折鉤斜度適中，豎彎鉤拉長", parts: ["也", "乙"], lookalikes: ["也", "他", "地", "池"] },
-          { ch: "上", zy: "ㄕㄤˋ", rad: "一", strokes: 3, words: ["上面", "上下"], tip: "先寫豎，再寫短橫，最後底橫要平穩", parts: ["上", "一"], lookalikes: ["上", "下", "止", "土"] },
-          { ch: "下", zy: "ㄒㄧㄚˋ", rad: "一", strokes: 3, words: ["下面", "下課"], tip: "長橫在上方，中間豎要直，右邊一點", parts: ["一", "卜"], lookalikes: ["下", "上", "不", "卡"] }
+          { ch: "拍", zy: "ㄆㄞ", rad: "手", strokes: 8, words: ["拍拍手", "拍球"], tip: "左窄右寬，「白」裡面的橫畫要靠左不碰右邊。", parts: ["扌", "白"], lookalikes: ["拍", "怕", "伯", "白"] },
+          { ch: "手", zy: "ㄕㄡˇ", rad: "手", strokes: 4, words: ["拍手", "小手"], tip: "第一筆是平撇，最後豎鉤在正中央。", parts: ["手", "毛"], lookalikes: ["手", "毛", "牛", "午"] },
+          { ch: "左", zy: "ㄗㄨㄛˇ", rad: "工", strokes: 5, words: ["左手", "左邊"], tip: "第一筆橫要長，下面「工」字要站穩。", parts: ["𠂇", "工"], lookalikes: ["左", "右", "在", "友"] },
+          { ch: "右", zy: "ㄧㄡˋ", rad: "口", strokes: 5, words: ["右手", "右邊"], tip: "第一筆橫短、撇長，下面寫「口」。", parts: ["𠂇", "口"], lookalikes: ["右", "左", "石", "古"] },
+          { ch: "你", zy: "ㄋㄧˇ", rad: "人", strokes: 7, words: ["你好", "你們"], tip: "左邊單人旁，右邊「尔」中間是豎鉤。", parts: ["亻", "尔"], lookalikes: ["你", "他", "們", "仔"] },
+          { ch: "他", zy: "ㄊㄚ", rad: "人", strokes: 5, words: ["他們", "他的"], tip: "右邊「也」的豎彎鉤要圓潤有力。", parts: ["亻", "也"], lookalikes: ["他", "也", "地", "她"] },
+          { ch: "也", zy: "ㄧㄝˇ", rad: "乙", strokes: 3, words: ["也是", "也好"], tip: "第一筆橫折鉤斜度適中，豎彎鉤拉長。", parts: ["也", "乙"], lookalikes: ["也", "他", "地", "池"] },
+          { ch: "上", zy: "ㄕㄤˋ", rad: "一", strokes: 3, words: ["上面", "上下"], tip: "先寫豎，再寫短橫，最後底橫要平穩。", parts: ["上", "一"], lookalikes: ["上", "下", "止", "土"] },
+          { ch: "下", zy: "ㄒㄧㄚˋ", rad: "一", strokes: 3, words: ["下面", "下課"], tip: "長橫在上方，中間豎要直，右邊一點。", parts: ["一", "卜"], lookalikes: ["下", "上", "不", "卡"] }
         ]
       },
       {
@@ -488,17 +470,17 @@
         title: "🌟 《這是誰的》",
         desc: "日常對話生字：這、是、誰、的、我、個、分、好、了、啊、多",
         chars: [
-          { ch: "這", zy: "ㄓㄜˋ", rad: "辵", strokes: 11, words: ["這是", "這裡"], tip: "課本標準 11 畫！先寫「言」，最後寫辵部平捺", parts: ["言", "辶"], lookalikes: ["這", "過", "道", "邊"] },
-          { ch: "是", zy: "ㄕˋ", rad: "日", strokes: 9, words: ["這是", "是的"], tip: "上面「日」寫扁一點，最後平捺要舒展", parts: ["日", "疋"], lookalikes: ["是", "足", "走", "定"] },
-          { ch: "誰", zy: "ㄕㄟˊ", rad: "言", strokes: 15, words: ["是誰", "誰的"], tip: "左邊言字旁，右邊「隹」四橫間距相等", parts: ["言", "隹"], lookalikes: ["誰", "隻", "推", "難"] },
-          { ch: "的", zy: "˙ㄉㄜ", rad: "白", strokes: 8, words: ["我的", "誰的"], tip: "左邊「白」寫小一點，右邊「勺」裡是一點", parts: ["白", "勺"], lookalikes: ["的", "白", "拍", "句"] },
-          { ch: "我", zy: "ㄨㄛˇ", rad: "戈", strokes: 7, words: ["我們", "我的"], tip: "第五筆斜鉤要拉長，右上角一點別忘記", parts: ["手", "戈"], lookalikes: ["我", "找", "成", "或"] },
-          { ch: "個", zy: "˙ㄍㄜ", rad: "人", strokes: 10, words: ["一個", "個子"], tip: "左邊單人旁，右邊「固」外框要方正", parts: ["亻", "固"], lookalikes: ["個", "們", "他", "做"] },
-          { ch: "分", zy: "ㄈㄣ", rad: "刀", strokes: 4, words: ["分享", "分開"], tip: "上面「八」撇低捺高，下面「刀」要置中", parts: ["八", "刀"], lookalikes: ["分", "公", "切", "份"] },
-          { ch: "好", zy: "ㄏㄠˇ", rad: "女", strokes: 6, words: ["你好", "好朋友"], tip: "女字旁第三筆是提，右邊「子」橫畫要平", parts: ["女", "子"], lookalikes: ["好", "子", "媽", "她"] },
-          { ch: "了", zy: "˙ㄌㄜ", rad: "亅", strokes: 2, words: ["好了", "來了"], tip: "第一筆橫撇，第二筆彎鉤要垂直", parts: ["了", "亅"], lookalikes: ["了", "子", "才", "手"] },
-          { ch: "啊", zy: "˙ㄚ", rad: "口", strokes: 11, words: ["好啊", "是啊"], tip: "口字旁靠上，中間耳朵旁，右邊「可」", parts: ["口", "阿"], lookalikes: ["啊", "阿", "河", "哥"] },
-          { ch: "多", zy: "ㄉㄨㄛ", rad: "夕", strokes: 6, words: ["多少", "很多"], tip: "上下兩個「夕」要對齊，下面比上面稍大", parts: ["夕", "夕"], lookalikes: ["多", "夕", "名", "外"] }
+          { ch: "這", zy: "ㄓㄜˋ", rad: "辵", strokes: 11, words: ["這是", "這裡"], tip: "課本標準 11 畫！先寫「言」，最後寫辵部平捺。", parts: ["言", "辶"], lookalikes: ["這", "過", "道", "邊"] },
+          { ch: "是", zy: "ㄕˋ", rad: "日", strokes: 9, words: ["這是", "是的"], tip: "上面「日」寫扁一點，最後平捺要舒展。", parts: ["日", "疋"], lookalikes: ["是", "足", "走", "定"] },
+          { ch: "誰", zy: "ㄕㄟˊ", rad: "言", strokes: 15, words: ["是誰", "誰的"], tip: "左邊言字旁，右邊「隹」四橫間距相等。", parts: ["言", "隹"], lookalikes: ["誰", "隻", "推", "難"] },
+          { ch: "的", zy: "˙ㄉㄜ", rad: "白", strokes: 8, words: ["我的", "誰的"], tip: "左邊「白」寫小一點，右邊「勺」裡是一點。", parts: ["白", "勺"], lookalikes: ["的", "白", "拍", "句"] },
+          { ch: "我", zy: "ㄨㄛˇ", rad: "戈", strokes: 7, words: ["我們", "我的"], tip: "第五筆斜鉤要拉長，右上角一點別忘記。", parts: ["手", "戈"], lookalikes: ["我", "找", "成", "或"] },
+          { ch: "個", zy: "˙ㄍㄜ", rad: "人", strokes: 10, words: ["一個", "個子"], tip: "左邊單人旁，右邊「固」外框要方正。", parts: ["亻", "固"], lookalikes: ["個", "們", "他", "做"] },
+          { ch: "分", zy: "ㄈㄣ", rad: "刀", strokes: 4, words: ["分享", "分開"], tip: "上面「八」撇低捺高，下面「刀」要置中。", parts: ["八", "刀"], lookalikes: ["分", "公", "切", "份"] },
+          { ch: "好", zy: "ㄏㄠˇ", rad: "女", strokes: 6, words: ["你好", "好朋友"], tip: "女字旁第三筆是提，右邊「子」橫畫要平。", parts: ["女", "子"], lookalikes: ["好", "子", "媽", "她"] },
+          { ch: "了", zy: "˙ㄌㄜ", rad: "亅", strokes: 2, words: ["好了", "來了"], tip: "第一筆橫撇，第二筆彎鉤要垂直。", parts: ["了", "亅"], lookalikes: ["了", "子", "才", "手"] },
+          { ch: "啊", zy: "˙ㄚ", rad: "口", strokes: 11, words: ["好啊", "是啊"], tip: "口字旁靠上，中間耳朵旁，右邊「可」。", parts: ["口", "阿"], lookalikes: ["啊", "阿", "河", "哥"] },
+          { ch: "多", zy: "ㄉㄨㄛ", rad: "夕", strokes: 6, words: ["多少", "很多"], tip: "上下兩個「夕」要對齊，下面比上面稍大。", parts: ["夕", "夕"], lookalikes: ["多", "夕", "名", "外"] }
         ]
       },
       {
@@ -507,20 +489,20 @@
         title: "🎠 《秋千》",
         desc: "好朋友一起玩：秋、千、和、玩、陪、高、山、到、大、海、朋、友、們、起",
         chars: [
-          { ch: "秋", zy: "ㄑㄧㄡ", rad: "禾", strokes: 9, words: ["秋天", "秋千"], tip: "禾木旁最後一筆變點，右邊「火」撇捺舒展", parts: ["禾", "火"], lookalikes: ["秋", "和", "伙", "種"] },
-          { ch: "千", zy: "ㄑㄧㄢ", rad: "十", strokes: 3, words: ["秋千", "千萬"], tip: "第一筆短平撇，第二筆橫要長，豎要直", parts: ["丿", "十"], lookalikes: ["千", "十", "干", "午"] },
-          { ch: "和", zy: "ㄏㄜˊ", rad: "口", strokes: 8, words: ["和平", "和你"], tip: "左邊禾木旁，右邊「口」寫在中間偏下", parts: ["禾", "口"], lookalikes: ["和", "秋", "知", "利"] },
-          { ch: "玩", zy: "ㄨㄢˊ", rad: "玉", strokes: 8, words: ["好玩", "玩耍"], tip: "王字旁最後一筆變提，右邊「元」豎彎鉤要穩", parts: ["王", "元"], lookalikes: ["玩", "完", "園", "元"] },
-          { ch: "陪", zy: "ㄆㄟˊ", rad: "阜", strokes: 11, words: ["陪伴", "陪你"], tip: "左邊耳朵旁，右邊「立」與「口」上下對齊", parts: ["阝", "咅"], lookalikes: ["陪", "部", "倍", "培"] },
-          { ch: "高", zy: "ㄍㄠ", rad: "高", strokes: 10, words: ["高興", "高山"], tip: "點橫要平，上下兩個「口」要對齊", parts: ["亠", "口"], lookalikes: ["高", "亮", "京", "亭"] },
-          { ch: "山", zy: "ㄕㄢ", rad: "山", strokes: 3, words: ["高山", "山上"], tip: "中間豎畫最高，左右兩豎向內微傾", parts: ["山", "丨"], lookalikes: ["山", "出", "仙", "歲"] },
-          { ch: "到", zy: "ㄉㄠˋ", rad: "刀", strokes: 8, words: ["來到", "看到"], tip: "「至」最後一橫變提，右邊立刀旁要直", parts: ["至", "刂"], lookalikes: ["到", "倒", "室", "致"] },
-          { ch: "大", zy: "ㄉㄚˋ", rad: "大", strokes: 3, words: ["大人", "大個子"], tip: "橫畫平直，撇捺對稱打開", parts: ["一", "人"], lookalikes: ["大", "太", "犬", "天"] },
-          { ch: "海", zy: "ㄏㄞˇ", rad: "水", strokes: 10, words: ["大海", "海水"], tip: "課本標準 10 畫！三點水旁，右邊「每」裡頭兩點", parts: ["氵", "每"], lookalikes: ["海", "每", "河", "梅"] },
-          { ch: "朋", zy: "ㄆㄥˊ", rad: "月", strokes: 8, words: ["朋友", "好朋友"], tip: "左右兩個「月」並排，要寫得瘦長對稱", parts: ["月", "月"], lookalikes: ["朋", "月", "明", "用"] },
-          { ch: "友", zy: "ㄧㄡˇ", rad: "又", strokes: 4, words: ["朋友", "友好"], tip: "第一筆橫、第二筆撇要長，下面「又」撇捺舒展", parts: ["𠂇", "又"], lookalikes: ["友", "左", "右", "有"] },
-          { ch: "們", zy: "˙ㄇㄣ", rad: "人", strokes: 10, words: ["我們", "你們"], tip: "單人旁靠左，右邊「門」字框要端正", parts: ["亻", "門"], lookalikes: ["們", "門", "開", "問"] },
-          { ch: "起", zy: "ㄑㄧˇ", rad: "走", strokes: 10, words: ["一起", "起來"], tip: "「走」的平捺托住右邊的「己」，右邊己要封口", parts: ["走", "己"], lookalikes: ["起", "走", "超", "趕"] }
+          { ch: "秋", zy: "ㄑㄧㄡ", rad: "禾", strokes: 9, words: ["秋天", "秋千"], tip: "禾木旁最後一筆變點，右邊「火」撇捺舒展。", parts: ["禾", "火"], lookalikes: ["秋", "和", "伙", "種"] },
+          { ch: "千", zy: "ㄑㄧㄢ", rad: "十", strokes: 3, words: ["秋千", "千萬"], tip: "第一筆短平撇，第二筆橫要長，豎要直。", parts: ["丿", "十"], lookalikes: ["千", "十", "干", "午"] },
+          { ch: "和", zy: "ㄏㄜˊ", rad: "口", strokes: 8, words: ["和平", "和你"], tip: "左邊禾木旁，右邊「口」寫在中間偏下。", parts: ["禾", "口"], lookalikes: ["和", "秋", "知", "利"] },
+          { ch: "玩", zy: "ㄨㄢˊ", rad: "玉", strokes: 8, words: ["好玩", "玩耍"], tip: "王字旁最後一筆變提，右邊「元」豎彎鉤要穩。", parts: ["王", "元"], lookalikes: ["玩", "完", "園", "元"] },
+          { ch: "陪", zy: "ㄆㄟˊ", rad: "阜", strokes: 11, words: ["陪伴", "陪你"], tip: "左邊耳朵旁，右邊「立」與「口」上下對齊。", parts: ["阝", "咅"], lookalikes: ["陪", "部", "倍", "培"] },
+          { ch: "高", zy: "ㄍㄠ", rad: "高", strokes: 10, words: ["高興", "高山"], tip: "點橫要平，上下兩個「口」要對齊。", parts: ["亠", "口"], lookalikes: ["高", "亮", "京", "亭"] },
+          { ch: "山", zy: "ㄕㄢ", rad: "山", strokes: 3, words: ["高山", "山上"], tip: "中間豎畫最高，左右兩豎向內微傾。", parts: ["山", "丨"], lookalikes: ["山", "出", "仙", "歲"] },
+          { ch: "到", zy: "ㄉㄠˋ", rad: "刀", strokes: 8, words: ["來到", "看到"], tip: "「至」最後一橫變提，右邊立刀旁要直。", parts: ["至", "刂"], lookalikes: ["到", "倒", "室", "致"] },
+          { ch: "大", zy: "ㄉㄚˋ", rad: "大", strokes: 3, words: ["大人", "大個子"], tip: "橫畫平直，撇捺對稱打開。", parts: ["一", "人"], lookalikes: ["大", "太", "犬", "天"] },
+          { ch: "海", zy: "ㄏㄞˇ", rad: "水", strokes: 10, words: ["大海", "海水"], tip: "課本標準 10 畫！三點水旁，右邊「每」裡頭兩點。", parts: ["氵", "每"], lookalikes: ["海", "每", "河", "梅"] },
+          { ch: "朋", zy: "ㄆㄥˊ", rad: "月", strokes: 8, words: ["朋友", "好朋友"], tip: "左右兩個「月」並排，要寫得瘦長對稱。", parts: ["月", "月"], lookalikes: ["朋", "月", "明", "用"] },
+          { ch: "友", zy: "ㄧㄡˇ", rad: "又", strokes: 4, words: ["朋友", "友好"], tip: "第一筆橫、第二筆撇要長，下面「又」撇捺舒展。", parts: ["𠂇", "又"], lookalikes: ["友", "左", "右", "有"] },
+          { ch: "們", zy: "˙ㄇㄣ", rad: "人", strokes: 10, words: ["我們", "你們"], tip: "單人旁靠左，右邊「門」字框要端正。", parts: ["亻", "門"], lookalikes: ["們", "門", "開", "問"] },
+          { ch: "起", zy: "ㄑㄧˇ", rad: "走", strokes: 10, words: ["一起", "起來"], tip: "「走」的平捺托住右邊的「己」，右邊己要封口。", parts: ["走", "己"], lookalikes: ["起", "走", "超", "趕"] }
         ]
       },
       {
@@ -529,19 +511,19 @@
         title: "🐸 《大個子，小個子》",
         desc: "第四課生字：子、拉、蛙、小、看、開、課、找、心、兩、隻、人、青",
         chars: [
-          { ch: "子", zy: "ㄗˇ", rad: "子", strokes: 3, words: ["個子", "孩子"], tip: "橫撇、彎鉤要連貫，最後一橫寫在中間偏上", parts: ["了", "一"], lookalikes: ["子", "了", "字", "好"] },
-          { ch: "拉", zy: "ㄌㄚ", rad: "手", strokes: 8, words: ["拉手", "拉開"], tip: "左邊提手旁，右邊「立」的底橫要平穩", parts: ["扌", "立"], lookalikes: ["拉", "立", "位", "泣"] },
-          { ch: "蛙", zy: "ㄨㄚ", rad: "虫", strokes: 12, words: ["青蛙", "小蛙"], tip: "左邊虫字旁，右邊兩個「土」上下對齊", parts: ["虫", "圭"], lookalikes: ["蛙", "娃", "佳", "掛"] },
-          { ch: "小", zy: "ㄒㄧㄠˇ", rad: "小", strokes: 3, words: ["大小", "小個子"], tip: "先寫中間豎鉤，再寫左點、右點，左右對稱", parts: ["亅", "八"], lookalikes: ["小", "少", "水", "尖"] },
-          { ch: "看", zy: "ㄎㄢˋ", rad: "目", strokes: 9, words: ["看見", "好看"], tip: "上面是「手」的變形，下面「目」要寫正", parts: ["手", "目"], lookalikes: ["看", "著", "春", "目"] },
-          { ch: "開", zy: "ㄎㄞ", rad: "門", strokes: 12, words: ["打開", "開心"], tip: "外面是「門」，裡面「开」兩橫要平、撇豎分明", parts: ["門", "开"], lookalikes: ["開", "門", "們", "關"] },
-          { ch: "課", zy: "ㄎㄜˋ", rad: "言", strokes: 15, words: ["上課", "下課"], tip: "左邊言字旁，右邊「果」要先寫「日」再寫「木」", parts: ["言", "果"], lookalikes: ["課", "果", "顆", "棵"] },
-          { ch: "找", zy: "ㄓㄠˇ", rad: "手", strokes: 7, words: ["找到", "尋找"], tip: "左邊提手旁，右邊「戈」斜鉤要拉長、右上角一點", parts: ["扌", "戈"], lookalikes: ["找", "我", "拍", "劃"] },
-          { ch: "心", zy: "ㄒㄧㄣ", rad: "心", strokes: 4, words: ["開心", "小心"], tip: "臥鉤要圓潤，三點位置高低錯落", parts: ["心", "丶"], lookalikes: ["心", "必", "思", "忘"] },
-          { ch: "兩", zy: "ㄌㄧㄤˇ", rad: "入", strokes: 8, words: ["兩個", "兩隻"], tip: "外框方正，裡面左右各一個「入」字", parts: ["冂", "入"], lookalikes: ["兩", "雨", "滿", "輛"] },
-          { ch: "隻", zy: "ㄓ", rad: "隹", strokes: 10, words: ["一隻", "兩隻"], tip: "上面「隹」四橫要緊湊，下面「又」撇捺打開", parts: ["隹", "又"], lookalikes: ["隻", "誰", "雙", "焦"] },
-          { ch: "人", zy: "ㄖㄣˊ", rad: "人", strokes: 2, words: ["大人", "人們"], tip: "撇高捺低，兩筆交接要自然穩固", parts: ["丿", "㇏"], lookalikes: ["人", "入", "八", "大"] },
-          { ch: "青", zy: "ㄑㄧㄥ", rad: "青", strokes: 8, words: ["青草", "青蛙"], tip: "上半部三橫長短有別，下半部「月」第一筆寫成豎", parts: ["龶", "月"], lookalikes: ["青", "清", "晴", "請"] }
+          { ch: "子", zy: "ㄗˇ", rad: "子", strokes: 3, words: ["個子", "孩子"], tip: "橫撇、彎鉤要連貫，最後一橫寫在中間偏上。", parts: ["了", "一"], lookalikes: ["子", "了", "字", "好"] },
+          { ch: "拉", zy: "ㄌㄚ", rad: "手", strokes: 8, words: ["拉手", "拉開"], tip: "左邊提手旁，右邊「立」的底橫要平穩。", parts: ["扌", "立"], lookalikes: ["拉", "立", "位", "泣"] },
+          { ch: "蛙", zy: "ㄨㄚ", rad: "虫", strokes: 12, words: ["青蛙", "小蛙"], tip: "左邊虫字旁，右邊兩個「土」上下對齊。", parts: ["虫", "圭"], lookalikes: ["蛙", "娃", "佳", "掛"] },
+          { ch: "小", zy: "ㄒㄧㄠˇ", rad: "小", strokes: 3, words: ["大小", "小個子"], tip: "先寫中間豎鉤，再寫左點、右點，左右對稱。", parts: ["亅", "八"], lookalikes: ["小", "少", "水", "尖"] },
+          { ch: "看", zy: "ㄎㄢˋ", rad: "目", strokes: 9, words: ["看見", "好看"], tip: "上面是「手」的變形，下面「目」要寫正。", parts: ["手", "目"], lookalikes: ["看", "著", "春", "目"] },
+          { ch: "開", zy: "ㄎㄞ", rad: "門", strokes: 12, words: ["打開", "開心"], tip: "外面是「門」，裡面「开」兩橫要平、撇豎分明。", parts: ["門", "开"], lookalikes: ["開", "門", "們", "關"] },
+          { ch: "課", zy: "ㄎㄜˋ", rad: "言", strokes: 15, words: ["上課", "下課"], tip: "左邊言字旁，右邊「果」要先寫「日」再寫「木」。", parts: ["言", "果"], lookalikes: ["課", "果", "顆", "棵"] },
+          { ch: "找", zy: "ㄓㄠˇ", rad: "手", strokes: 7, words: ["找到", "尋找"], tip: "左邊提手旁，右邊「戈」斜鉤要拉長、右上角一點。", parts: ["扌", "戈"], lookalikes: ["找", "我", "拍", "劃"] },
+          { ch: "心", zy: "ㄒㄧㄣ", rad: "心", strokes: 4, words: ["開心", "小心"], tip: "臥鉤要圓潤，三點位置高低錯落。", parts: ["心", "丶"], lookalikes: ["心", "必", "思", "忘"] },
+          { ch: "兩", zy: "ㄌㄧㄤˇ", rad: "入", strokes: 8, words: ["兩個", "兩隻"], tip: "外框方正，裡面左右各一個「入」字。", parts: ["冂", "入"], lookalikes: ["兩", "雨", "滿", "輛"] },
+          { ch: "隻", zy: "ㄓ", rad: "隹", strokes: 10, words: ["一隻", "兩隻"], tip: "上面「隹」四橫要緊湊，下面「又」撇捺打開。", parts: ["隹", "又"], lookalikes: ["隻", "誰", "雙", "焦"] },
+          { ch: "人", zy: "ㄖㄣˊ", rad: "人", strokes: 2, words: ["大人", "人們"], tip: "撇高捺低，兩筆交接要自然穩固。", parts: ["丿", "㇏"], lookalikes: ["人", "入", "八", "大"] },
+          { ch: "青", zy: "ㄑㄧㄥ", rad: "青", strokes: 8, words: ["青草", "青蛙"], tip: "上半部三橫長短有別，下半部「月」第一筆寫成豎。", parts: ["龶", "月"], lookalikes: ["青", "清", "晴", "請"] }
         ]
       }
     ];
@@ -564,14 +546,14 @@
     // =========================================================
     // 2. 遊戲存檔與狀態管理
     // =========================================================
-    const SAVE_KEY = "hanzi_island_netlify_style_v2";
+    const SAVE_KEY = "hanzi_island_warm_v3";
     let appState = {
-      stars: 1,
+      stars: 3,
       dinoLv: 1,
-      dinoXp: 0,
+      dinoXp: 2,
       eggCount: 1,
       maxDinoLv: 1,
-      writtenChars: {},
+      writtenChars: { "拍": true },
       dictatedChars: {},
       crownedLessons: {}
     };
@@ -588,6 +570,7 @@
     let activeLessonIdx = 0;
     let activeCharIdx = 0;
     let activeTab = "write";
+    let isBlindMode = false;
     let writerInstance = null;
     let strokeDoneCount = 0;
 
@@ -784,13 +767,6 @@
       playOnlineFemaleVoice(text, rate, seq, onFinish);
     }
 
-    function unlockAndEnter() {
-      document.getElementById("welcome-voice-modal").classList.add("hidden");
-      playMagicSfx("win");
-      speakSister("歡迎來到國字魔法冒險島！快選一課開始挑戰吧！");
-      showToast("🌸 大姊姊語音已開啟！");
-    }
-
     function testSisterVoice() {
       playMagicSfx("win");
       speakSister("你好呀！我是陪你練寫字的大姊姊，我們一起加油吧！");
@@ -813,17 +789,18 @@
     // 4. 頂部狀態與恐龍進化系統
     // =========================================================
     function refreshHeaderAndDino() {
-      document.getElementById("top-stars").textContent = appState.stars;
       const masteredCount = Object.keys(appState.writtenChars).length;
-      document.getElementById("top-mastered").textContent = masteredCount;
+      document.getElementById("stamp-count-pill").textContent = masteredCount + "/47";
+      document.getElementById("feed-remain-pill").textContent = "剩" + appState.stars + "顆";
 
       const stage = DINO_STAGES[Math.min(appState.dinoLv - 1, DINO_STAGES.length - 1)];
       document.getElementById("dino-avatar").textContent = stage.emoji;
+      document.getElementById("dino-lv-pill").textContent = "Lv." + appState.dinoLv;
       document.getElementById("dino-stage-name").textContent = stage.name;
-      document.getElementById("dino-egg-badge").textContent = "第 " + appState.eggCount + " 顆龍蛋 · Lv." + appState.dinoLv;
+      document.getElementById("dino-egg-badge").textContent = "第 " + appState.eggCount + " 顆龍蛋";
       document.getElementById("dino-xp-text").textContent = appState.dinoXp + "/3 星星";
       document.getElementById("dino-xp-bar").style.width = Math.min(100, Math.round((appState.dinoXp / 3) * 100)) + "%";
-      document.getElementById("dex-unlocked").textContent = appState.maxDinoLv;
+      document.getElementById("dex-unlocked-pill").textContent = appState.maxDinoLv + "/12";
     }
 
     function feedDinoStar() {
@@ -869,16 +846,16 @@
         const hasCrown = !!appState.crownedLessons[lesson.id];
 
         const card = document.createElement("div");
-        card.className = "bg-white rounded-3xl p-5 shadow-md border-2 border-pink-100 hover:border-pink-400 transition flex flex-col justify-between cursor-pointer";
+        card.className = "bg-[#fffdf6] rounded-3xl p-5 shadow-xs border-2 border-amber-200 hover:border-rose-400 transition flex flex-col justify-between cursor-pointer";
         const charBoxes = lesson.chars.map(function (c) {
           const done = !!appState.writtenChars[c.ch];
-          return '<div class="w-9 h-9 rounded-xl ' + (done ? 'bg-pink-500 text-white border-pink-500' : 'bg-slate-50 text-slate-700 border-slate-200') + ' border flex items-center justify-center kai-font text-xl font-bold">' + c.ch + '</div>';
+          return '<div class="w-9 h-9 rounded-xl ' + (done ? 'bg-rose-500 text-white border-rose-500' : 'bg-white text-slate-700 border-slate-200') + ' border flex items-center justify-center kai-font text-xl font-bold">' + c.ch + '</div>';
         }).join("");
 
         card.innerHTML =
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-2">' +
-              '<span class="px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-black">' + lesson.badge + '</span>' +
+              '<span class="px-3 py-1 rounded-full bg-rose-50 text-rose-600 text-xs font-black">' + lesson.badge + '</span>' +
               '<div class="flex items-center gap-2 text-xs font-bold">' +
                 '<span class="' + (hasCrown ? 'text-amber-500' : 'text-slate-300') + '">👑 聽寫滿分</span>' +
                 '<span class="text-slate-500">已學會 ' + learned + ' / ' + lesson.chars.length + '</span>' +
@@ -888,7 +865,7 @@
             '<p class="text-xs text-slate-500 mb-3">' + lesson.desc + '</p>' +
             '<div class="flex flex-wrap gap-1.5 mb-4">' + charBoxes + '</div>' +
           '</div>' +
-          '<div class="w-full py-2.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 text-white text-center font-black text-sm shadow-sm">' +
+          '<div class="w-full py-2.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 text-white text-center font-black text-sm shadow-xs">' +
             '🚀 開始第' + ['一','二','三','四'][idx] + '課冒險' +
           '</div>';
 
@@ -902,6 +879,7 @@
       stopSpeech();
       document.getElementById("lesson-view").classList.add("hidden");
       document.getElementById("home-view").classList.remove("hidden");
+      document.getElementById("header-sub-info").textContent = "康軒一上 · 第一課～第四課 (47字)";
       renderHomeLessons();
     }
 
@@ -910,15 +888,16 @@
       activeLessonIdx = lessonIdx;
       activeCharIdx = charIdx || 0;
       const lesson = LESSONS_DATA[activeLessonIdx];
-      document.getElementById("active-lesson-banner").textContent =
-        ["第一課", "第二課", "第三課", "第四課"][lessonIdx] + "《" + lesson.title.split("《")[1];
+      const titleText = ["第一課", "第二課", "第三課", "第四課"][lessonIdx] + "《" + lesson.title.split("《")[1];
+      document.getElementById("active-lesson-banner").textContent = titleText;
+      document.getElementById("header-sub-info").textContent = titleText + " · 共 " + lesson.chars.length + " 個生字";
       document.getElementById("home-view").classList.add("hidden");
       document.getElementById("lesson-view").classList.remove("hidden");
       switchTab("write");
     }
 
     // =========================================================
-    // 6. 關卡切換與精準筆順描紅
+    // 6. 關卡切換與魔法筆順（含盲寫切換）
     // =========================================================
     function switchTab(tab) {
       playMagicSfx("tap");
@@ -928,10 +907,10 @@
         const btn = document.getElementById("nav-" + t);
         const sec = document.getElementById("sec-" + t);
         if (t === tab) {
-          btn.className = "py-3 px-3 rounded-2xl bg-pink-500 text-white font-black text-sm shadow-md transition";
+          btn.className = "relative py-2.5 px-3 rounded-2xl bg-rose-500 text-white font-black text-xs sm:text-sm shadow-sm transition";
           sec.classList.remove("hidden");
         } else {
-          btn.className = "py-3 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-sm hover:bg-pink-50 transition";
+          btn.className = "relative py-2.5 px-3 rounded-2xl bg-white text-slate-600 border border-slate-200 font-bold text-xs sm:text-sm hover:bg-rose-50 transition";
           sec.classList.add("hidden");
         }
       });
@@ -948,24 +927,39 @@
       }
     }
 
+    function toggleBlindWrite() {
+      playMagicSfx("tap");
+      isBlindMode = !isBlindMode;
+      const btn = document.getElementById("btn-blind-toggle");
+      const badge = document.getElementById("mode-corner-badge");
+      if (isBlindMode) {
+        btn.className = "px-3.5 py-2.5 rounded-2xl bg-indigo-600 text-white font-black text-xs sm:text-sm shadow-sm active:scale-95 transition";
+        btn.textContent = "👀 顯示描紅底字";
+        badge.textContent = "🙈 盲寫挑戰";
+      } else {
+        btn.className = "px-3.5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-black text-xs sm:text-sm active:scale-95 transition";
+        btn.textContent = "🙈 盲寫挑戰";
+        badge.textContent = "🏫 精準筆順";
+      }
+      loadWriteChar(false);
+    }
+
     function renderCharPills() {
       const wrap = document.getElementById("lesson-char-pills");
       wrap.innerHTML = "";
       const lesson = LESSONS_DATA[activeLessonIdx];
       lesson.chars.forEach(function (item, idx) {
         const isDone = !!appState.writtenChars[item.ch];
-        const isDict = !!appState.dictatedChars[item.ch];
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className =
-          "w-12 h-14 rounded-2xl border-2 flex flex-col items-center justify-center transition " +
+          "w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition kai-font text-2xl font-bold " +
           (idx === activeCharIdx
-            ? "border-pink-500 bg-pink-50 text-pink-700 scale-105 shadow-sm"
+            ? "border-rose-500 bg-rose-500 text-white shadow-sm scale-105"
             : isDone
-              ? "border-emerald-300 bg-emerald-50/60 text-slate-800"
-              : "border-slate-200 bg-white text-slate-700");
-        const badge = isDict ? "👑" : isDone ? "⭐" : "▫️";
-        btn.innerHTML = '<span class="kai-font text-xl font-bold leading-none">' + item.ch + '</span><span class="text-[10px] mt-0.5">' + badge + '</span>';
+              ? "border-emerald-300 bg-emerald-50 text-slate-800"
+              : "border-slate-200 bg-slate-50/70 text-slate-700 hover:border-rose-300");
+        btn.textContent = item.ch;
         btn.onclick = function () {
           playMagicSfx("tap");
           activeCharIdx = idx;
@@ -986,33 +980,41 @@
       document.getElementById("w-strokes").textContent = item.strokes;
       document.getElementById("w-words").textContent = item.words.join("、");
       document.getElementById("w-tip").textContent = "💡 寫字小幫手：" + item.tip;
-      document.getElementById("stroke-progress-badge").textContent = "描紅 0 / " + item.strokes + " 筆";
+      document.getElementById("stroke-progress-badge").textContent = "描紅 0/" + item.strokes + " 筆";
       document.getElementById("write-win-overlay").classList.add("hidden");
 
+      const monsters = [
+        { name: "敲鼓小怪獸", icon: "🥁" },
+        { name: "泡泡小怪獸", icon: "🫧" },
+        { name: "蘑菇小怪獸", icon: "🍄" },
+        { name: "閃電小怪獸", icon: "⚡" }
+      ];
+      const m = monsters[activeCharIdx % monsters.length];
+      document.getElementById("monster-name").textContent = m.name;
+      document.getElementById("monster-emoji").textContent = m.icon;
       document.getElementById("monster-hp-bar").style.width = "100%";
       document.getElementById("monster-hp-text").textContent = "100%";
-      document.getElementById("monster-emoji").textContent = ["👾", "👹", "👻", "🐲"][activeCharIdx % 4];
       document.getElementById("monster-speech").textContent = "「按照正確筆順一筆一畫描寫，才能打敗我喔！」";
 
       const target = document.getElementById("hanzi-writer-target");
       target.innerHTML = "";
       try {
         writerInstance = HanziWriter.create("hanzi-writer-target", item.ch, {
-          width: 272,
-          height: 272,
+          width: 268,
+          height: 268,
           padding: 18,
           showCharacter: false,
-          showOutline: true,
+          showOutline: !isBlindMode,
           strokeColor: "#1e293b",
-          outlineColor: "#fecdd3",
+          outlineColor: "#cbd5e1",
           highlightColor: "#f43f5e",
-          drawingColor: "#4f46e5",
+          drawingColor: "#3b82f6",
           drawingWidth: 18,
           showHintAfterMisses: 2
         });
         runWriterQuiz();
       } catch (e) {
-        target.innerHTML = '<div class="w-full h-full flex items-center justify-center kai-font text-9xl text-rose-200">' + item.ch + '</div>';
+        target.innerHTML = '<div class="w-full h-full flex items-center justify-center kai-font text-9xl text-slate-300">' + item.ch + '</div>';
       }
 
       if (shouldSpeak) {
@@ -1033,14 +1035,14 @@
           playMagicSfx("tap");
           strokeDoneCount = strokeData.strokeNum + 1;
           const total = Math.max(item.strokes, strokeDoneCount + strokeData.strokesRemaining);
-          document.getElementById("stroke-progress-badge").textContent = "描紅 " + strokeDoneCount + " / " + item.strokes + " 筆";
+          document.getElementById("stroke-progress-badge").textContent = "描紅 " + strokeDoneCount + "/" + item.strokes + " 筆";
           const hp = Math.max(0, Math.round((strokeData.strokesRemaining / total) * 100));
           document.getElementById("monster-hp-bar").style.width = hp + "%";
           document.getElementById("monster-hp-text").textContent = hp + "%";
         },
         onComplete: function () {
           playMagicSfx("win");
-          document.getElementById("stroke-progress-badge").textContent = "描紅 " + item.strokes + " / " + item.strokes + " 筆";
+          document.getElementById("stroke-progress-badge").textContent = "描紅 " + item.strokes + "/" + item.strokes + " 筆";
           document.getElementById("monster-hp-bar").style.width = "0%";
           document.getElementById("monster-hp-text").textContent = "0%";
           document.getElementById("monster-emoji").textContent = "💫";
@@ -1085,7 +1087,7 @@
     }
 
     // =========================================================
-    // 7. 關卡 2：國字部件拼圖小廚師
+    // 7. 關卡 2：部件拼圖
     // =========================================================
     function nextPuzzleQuestion() {
       const lesson = LESSONS_DATA[activeLessonIdx];
@@ -1115,7 +1117,7 @@
       pool.forEach(function (part) {
         const b = document.createElement("button");
         b.type = "button";
-        b.className = "w-16 h-16 rounded-2xl bg-white border-2 border-indigo-200 hover:border-pink-400 kai-font text-3xl font-bold text-slate-800 shadow-sm active:scale-95 transition";
+        b.className = "w-16 h-16 rounded-2xl bg-white border-2 border-amber-200 hover:border-rose-400 kai-font text-3xl font-bold text-slate-800 shadow-xs active:scale-95 transition";
         b.textContent = part;
         b.onclick = function () { selectPuzzlePart(part); };
         choicesEl.appendChild(b);
@@ -1170,7 +1172,7 @@
     }
 
     // =========================================================
-    // 8. 關卡 3：形近字辨識挑戰
+    // 8. 關卡 3：偵探找不同
     // =========================================================
     function startLookalikeGame() {
       laStreak = 0;
@@ -1209,7 +1211,7 @@
       cards.forEach(function (ch) {
         const b = document.createElement("button");
         b.type = "button";
-        b.className = "h-20 rounded-2xl bg-slate-50 hover:bg-indigo-50 border-2 border-slate-200 kai-font text-4xl font-bold text-slate-800 shadow-sm active:scale-95 transition";
+        b.className = "h-20 rounded-2xl bg-slate-50 hover:bg-sky-50 border-2 border-slate-200 kai-font text-4xl font-bold text-slate-800 shadow-xs active:scale-95 transition";
         b.textContent = ch;
         b.onclick = function () {
           if (laTimeLeft <= 0) return;
@@ -1287,21 +1289,21 @@
       document.getElementById("dict-zhuyin").textContent = item.zy;
       document.getElementById("dict-blank").textContent = item.words[0].split(item.ch).join(" ＿ ");
       document.getElementById("dict-strokes").textContent = item.strokes;
-      document.getElementById("dict-stroke-badge").textContent = "聽寫 0 / " + item.strokes + " 畫";
+      document.getElementById("dict-stroke-badge").textContent = "聽寫 0/" + item.strokes + " 畫";
       document.getElementById("dict-win-overlay").classList.add("hidden");
 
       const target = document.getElementById("dict-writer-target");
       target.innerHTML = "";
       try {
         dictWriter = HanziWriter.create("dict-writer-target", item.ch, {
-          width: 272,
-          height: 272,
+          width: 268,
+          height: 268,
           padding: 18,
           showCharacter: false,
           showOutline: false,
           strokeColor: "#1e293b",
           highlightColor: "#f59e0b",
-          drawingColor: "#4f46e5",
+          drawingColor: "#3b82f6",
           drawingWidth: 18,
           showHintAfterMisses: 3
         });
@@ -1311,7 +1313,7 @@
           onCorrectStroke: function () {
             playMagicSfx("tap");
             dStrokes += 1;
-            document.getElementById("dict-stroke-badge").textContent = "聽寫 " + dStrokes + " / " + item.strokes + " 畫";
+            document.getElementById("dict-stroke-badge").textContent = "聽寫 " + dStrokes + "/" + item.strokes + " 畫";
           },
           onComplete: function () {
             playMagicSfx("win");
@@ -1373,9 +1375,9 @@
       const grid = document.getElementById("dino-dex-grid");
       grid.innerHTML = DINO_STAGES.map(function (st) {
         const unlocked = st.lv <= appState.maxDinoLv;
-        return '<div class="p-3 rounded-2xl border-2 ' + (unlocked ? 'border-indigo-200 bg-indigo-50/50' : 'border-slate-100 bg-slate-50 opacity-50') + ' text-center">' +
+        return '<div class="p-3 rounded-2xl border-2 ' + (unlocked ? 'border-amber-200 bg-amber-50/50' : 'border-slate-100 bg-slate-50 opacity-50') + ' text-center">' +
           '<div class="text-3xl mb-1">' + (unlocked ? st.emoji : '❓') + '</div>' +
-          '<div class="text-[11px] font-black text-indigo-600">Lv.' + st.lv + '</div>' +
+          '<div class="text-[11px] font-black text-amber-700">Lv.' + st.lv + '</div>' +
           '<div class="text-xs font-bold text-slate-700 mt-0.5">' + (unlocked ? st.name : '尚未解鎖') + '</div>' +
         '</div>';
       }).join("");
@@ -1390,7 +1392,7 @@
           const isDict = !!appState.dictatedChars[c.ch];
           const isDone = !!appState.writtenChars[c.ch];
           const icon = isDict ? "👑" : isDone ? "⭐" : "⬜";
-          return '<button type="button" onclick="jumpToChar(' + lIdx + ',' + cIdx + ')" class="w-12 h-14 rounded-xl border ' + (isDone ? 'border-pink-300 bg-pink-50' : 'border-slate-200 bg-white') + ' flex flex-col items-center justify-center">' +
+          return '<button type="button" onclick="jumpToChar(' + lIdx + ',' + cIdx + ')" class="w-12 h-14 rounded-xl border ' + (isDone ? 'border-rose-300 bg-rose-50' : 'border-slate-200 bg-white') + ' flex flex-col items-center justify-center">' +
             '<span class="kai-font text-xl font-bold">' + c.ch + '</span>' +
             '<span class="text-[10px]">' + icon + '</span>' +
           '</button>';
@@ -1405,9 +1407,10 @@
       openLesson(lIdx, cIdx);
     }
 
-    // 啟動初始化
+    // 啟動初始化（直接進入第一課《拍拍手》魔法筆順主畫面）
     refreshHeaderAndDino();
-    renderHomeLessons();
+    renderCharPills();
+    loadWriteChar(false);
   </script>
 </body>
 </html>
