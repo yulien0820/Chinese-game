@@ -32,7 +32,6 @@
       padding-bottom: 40px;
     }
 
-    /* 歡迎解鎖聲音遮罩 */
     #audio-welcome-modal {
       position: fixed; inset: 0; z-index: 9999;
       background: rgba(30, 35, 50, 0.72);
@@ -53,7 +52,6 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* 頂部列 */
     header {
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(10px);
@@ -76,7 +74,6 @@
 
     .container { max-width: 980px; margin: 0 auto; padding: 16px; }
 
-    /* 恐龍與集章狀態條 */
     .pet-bar {
       background: #fff; border-radius: 22px; padding: 14px 18px;
       box-shadow: var(--shadow-card); border: 2px solid #ffe3ec;
@@ -93,7 +90,6 @@
     .xp-wrap { width: 170px; height: 10px; background: #f1f3f5; border-radius: 999px; overflow: hidden; margin-top: 5px; }
     .xp-fill { height: 100%; background: linear-gradient(90deg, #ff6b9d, #ffb703); width: 0%; transition: width 0.4s; }
 
-    /* 課程選擇卡片 */
     .lesson-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;
       margin-bottom: 18px;
@@ -114,7 +110,6 @@
     .lesson-name { font-size: 1.15rem; font-weight: 900; margin: 2px 0 6px; }
     .lesson-chars { font-family: var(--font-kai); font-size: 1.05rem; color: #495057; letter-spacing: 2px; }
 
-    /* 遊戲主舞台 */
     .stage-card {
       background: #fff; border-radius: 26px; padding: 20px;
       box-shadow: var(--shadow-card); border: 2px solid #ffe3ec;
@@ -136,7 +131,6 @@
     }
     .char-chip .crown { font-size: 0.65rem; line-height: 1; margin-top: 1px; }
 
-    /* 四大模式分頁 */
     .mode-tabs {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px;
     }
@@ -150,7 +144,6 @@
       box-shadow: 0 4px 12px rgba(255,107,157,0.3);
     }
 
-    /* 寫字與教學區 */
     .practice-layout {
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;
     }
@@ -168,7 +161,6 @@
       box-shadow: inset 0 0 0 2px #ffe3ec, 0 8px 20px rgba(0,0,0,0.06);
       position: relative; overflow: hidden; touch-action: none;
     }
-    /* 田字格輔助線 */
     #writer-box::before {
       content: ""; position: absolute; inset: 0; pointer-events: none;
       background-image:
@@ -211,7 +203,6 @@
     .btn-amber { background: var(--accent); color: #212529; }
     .btn-soft { background: #f1f3f5; color: #495057; }
 
-    /* 聽寫與認字挑戰區 */
     .quiz-box { text-align: center; padding: 10px; }
     .quiz-options {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
@@ -226,7 +217,6 @@
     .quiz-opt.correct { border-color: var(--success); background: #e6fcf5; color: #087f5b; }
     .quiz-opt.wrong { border-color: #fa5252; background: #fff5f5; color: #c92a2a; }
 
-    /* 彈窗與 Toast */
     .modal-backdrop {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5);
       display: none; align-items: center; justify-content: center; z-index: 500; padding: 16px;
@@ -253,7 +243,6 @@
 </head>
 <body>
 
-  <!-- 開場聲音解鎖視窗 -->
   <div id="audio-welcome-modal">
     <div class="welcome-box">
       <div style="font-size:3.6rem; margin-bottom:8px;">🦖✨</div>
@@ -285,7 +274,6 @@
   </header>
 
   <div class="container">
-    <!-- 恐龍夥伴列 -->
     <div class="pet-bar">
       <div class="pet-info">
         <div class="pet-avatar" id="pet-emoji">🥚</div>
@@ -301,10 +289,8 @@
       </div>
     </div>
 
-    <!-- 課別選擇 -->
     <div class="lesson-grid" id="lesson-grid"></div>
 
-    <!-- 練習主舞台 -->
     <div class="stage-card">
       <div class="char-selector" id="char-selector"></div>
 
@@ -315,7 +301,6 @@
         <button class="mode-btn" id="tab-dictation" onclick="switchMode('dictation')">👑 聽寫魔王</button>
       </div>
 
-      <!-- 寫字模式（描紅 / 盲寫 / 聽寫） -->
       <div id="write-stage" class="practice-layout">
         <div class="board-wrap">
           <div id="writer-box"></div>
@@ -346,7 +331,6 @@
         </div>
       </div>
 
-      <!-- 聽音辨字模式 -->
       <div id="quiz-stage" class="quiz-box" style="display:none;">
         <h3 style="margin:0 0 8px; color:#364fc7;">🎯 聽一聽，選出正確的國字！</h3>
         <button class="action-btn btn-pink" onclick="playQuizPrompt()">🔊 再聽一次題目</button>
@@ -360,7 +344,6 @@
     </footer>
   </div>
 
-  <!-- 彈窗：生字集章冊 -->
   <div class="modal-backdrop" id="stamp-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-card">
       <h3 style="margin-top:0; color:#e84e84;">🏅 全冊 47 生字皇冠集章冊</h3>
@@ -372,7 +355,6 @@
     </div>
   </div>
 
-  <!-- 彈窗：每日打卡 -->
   <div class="modal-backdrop" id="checkin-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-card" style="text-align:center;">
       <h3 style="margin-top:0; color:#d9480f;">📅 每日闖關打卡板</h3>
@@ -382,7 +364,6 @@
     </div>
   </div>
 
-  <!-- 彈窗：榮譽神龍殿 -->
   <div class="modal-backdrop" id="hall-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-card" style="text-align:center;">
       <h3 style="margin-top:0; color:#364fc7;">🏆 榮譽神龍殿</h3>
@@ -395,9 +376,6 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ==========================================
-    // 1. 課本實拍逐字校對資料庫（一上第一課～第四課，共 47 字）
-    // ==========================================
     const LESSONS = [
       {
         id: 1,
@@ -472,7 +450,6 @@
       }
     ];
 
-    // 恐龍進化階段
     const DINO_STAGES = [
       { lv: 1, emoji: "🥚", name: "魔法小龍蛋" },
       { lv: 2, emoji: "🐣", name: "破殼小恐龍" },
@@ -488,16 +465,13 @@
       { lv: 12, emoji: "🐲", name: "宇宙守護聖龍王" }
     ];
 
-    // ==========================================
-    // 2. 遊戲存檔狀態
-    // ==========================================
     const STORAGE_KEY = "hanzi_adventure_cinthya_v2";
     let state = {
       stars: 0,
       petLv: 1,
       petXp: 0,
       graduated: 0,
-      mastery: {}, // { "拍": 1 | 2 | 3 }
+      mastery: {},
       streak: 1,
       lastDate: new Date().toDateString()
     };
@@ -524,9 +498,6 @@
     let writer = null;
     let currentQuizTarget = null;
 
-    // ==========================================
-    // 3. 全裝置零靜音雙引擎台灣國語語音 ＋ Web Audio 魔法音效
-    // ==========================================
     let selectedTwVoice = null;
     let audioCtx = null;
     let speechUnlocked = false;
@@ -662,8 +633,7 @@
     function splitSpeechChunks(text) {
       const raw = String(text || "").trim();
       if (!raw) return [];
-      const parts = raw.split(/([，。！？、；：!?,.
-]+)/);
+      const parts = raw.split(/([，。！？、；：!?,.\u000a]+)/);
       const chunks = [];
       let buf = "";
       for (let i = 0; i < parts.length; i++) {
@@ -780,9 +750,6 @@
       showToast("🌸 溫柔大姊姊陪你一起學寫字！");
     };
 
-    // ==========================================
-    // 4. 介面渲染與互動邏輯
-    // ==========================================
     function showToast(msg) {
       const t = document.getElementById("toast");
       t.textContent = msg;
@@ -1009,7 +976,6 @@
       speakText(`${item.ch}，${item.words.join("、")}`);
     };
 
-    // 聽音辨字關卡
     function setupQuizQuestion() {
       const lesson = LESSONS[currentLessonIdx];
       const pool = [...lesson.chars];
@@ -1054,7 +1020,6 @@
       speakText(`請選出「${currentQuizTarget.words[0]}」的「${currentQuizTarget.ch}」`);
     };
 
-    // 彈窗渲染
     window.openStampBookModal = function () {
       playTone("tap");
       const container = document.getElementById("stamp-book-content");
@@ -1105,7 +1070,6 @@
       document.getElementById("hall-modal").classList.add("open");
     };
 
-    // 初始化啟動
     updateTopAndPetUI();
     renderLessons();
     renderCharSelector();
