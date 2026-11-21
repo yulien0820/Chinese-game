@@ -749,60 +749,75 @@
       unlockAudioHardware();
       stopSpeech();
       const seq = speechSeq;
-      const chunks = chunkText(text);
-      const audio = document.getElementById("tts-audio-player");
-      if (!audio || !chunks.length) {
-        fallbackSystemSpeech(text, rate, seq, onFinish);
-        return;
-      }
+      const fullCleanText = String(text).trim();
 
-      const playRate = typeof rate === "number" ? Math.max(0.8, Math.min(1.15, rate + 0.05)) : 0.95;
+      // 優先使用瀏覽器原生台灣女聲一次性完整朗讀，不拆段、不疊加
+      if ("speechSynthesis" in window) {
+        try {
+          window.speechSynthesis.resume();
+          const voice = cachedTwVoice || pickBestTwVoice();
+          const u = new SpeechSynthesisUtterance(fullCleanText);
+          u.lang = "zh-TW";
+          if (voice) u.voice = voice;
+          u.rate = typeof rate === "number" ? rate : 0.92;
+          u.pitch = 1.1;
+          u.volume = 1.0;
 
-      function playIdx(i) {
-        if (seq !== speechSeq) return;
-        if (i >= chunks.length) {
-          if (typeof onFinish === "function") onFinish();
+          let hasStarted = false;
+          let fallbackTriggered = false;
+
+          const triggerBackupOnce = function () {
+            if (fallbackTriggered || hasStarted || seq !== speechSeq) return;
+            fallbackTriggered = true;
+            try { window.speechSynthesis.cancel(); } catch (e) {}
+            const audio = document.getElementById("tts-audio-player");
+            if (!audio) {
+              if (typeof onFinish === "function") onFinish();
+              return;
+            }
+            const q = fullCleanText.slice(0, 80);
+            const url = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(q);
+            audio.onended = function () { if (seq === speechSeq && typeof onFinish === "function") onFinish(); };
+            audio.onerror = function () { if (seq === speechSeq && typeof onFinish === "function") onFinish(); };
+            audio.volume = 1.0;
+            audio.src = url;
+            audio.playbackRate = typeof rate === "number" ? Math.max(0.8, Math.min(1.15, rate + 0.05)) : 0.96;
+            const p = audio.play();
+            if (p && typeof p.catch === "function") {
+              p.catch(function () { if (typeof onFinish === "function") onFinish(); });
+            }
+          };
+
+          u.onstart = function () { hasStarted = true; };
+          u.onend = function () { if (seq === speechSeq && typeof onFinish === "function") onFinish(); };
+          u.onerror = triggerBackupOnce;
+
+          window.speechSynthesis.speak(u);
+
+          setTimeout(function () {
+            if (seq === speechSeq && !hasStarted) {
+              triggerBackupOnce();
+            }
+          }, 420);
           return;
-        }
-        const q = chunks[i];
-        const endpoints = [
-          "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(q),
-          "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(q) + "&le=zh"
-        ];
-        let epIdx = 0;
-
-        function tryEndpoint() {
-          if (seq !== speechSeq) return;
-          if (epIdx >= endpoints.length) {
-            fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
-            return;
-          }
-          const url = endpoints[epIdx++];
-          audio.onended = function () { if (seq === speechSeq) playIdx(i + 1); };
-          audio.onerror = function () { if (seq === speechSeq) tryEndpoint(); };
-          audio.volume = 1.0;
-          audio.src = url;
-          audio.playbackRate = playRate;
-          const prom = audio.play();
-          if (prom && typeof prom.catch === "function") {
-            prom.catch(function () {
-              if (seq === speechSeq) {
-                if (epIdx < endpoints.length) tryEndpoint();
-                else fallbackSystemSpeech(q, rate, seq, function () { playIdx(i + 1); });
-              }
-            });
-          }
-        }
-
-        tryEndpoint();
+        } catch (e) {}
       }
 
-      playIdx(0);
+      const audio = document.getElementById("tts-audio-player");
+      if (audio) {
+        const q = fullCleanText.slice(0, 80);
+        const url = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-TW&q=" + encodeURIComponent(q);
+        audio.onended = function () { if (seq === speechSeq && typeof onFinish === "function") onFinish(); };
+        audio.onerror = function () { if (typeof onFinish === "function") onFinish(); };
+        audio.volume = 1.0;
+        audio.src = url;
+        audio.play().catch(function () {});
+      }
     }
 
     function testSisterVoice() {
       playMagicSfx("win");
-      speakSister("你好呀！拍，拍拍手、拍球。我們一起來學寫字吧！");
+      speakSister("你好呀，我們一起來學寫字吧！");
       showToast("🔊 正在播放聲音...");
     }
 
