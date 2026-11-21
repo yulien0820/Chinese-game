@@ -1577,10 +1577,12 @@
       openLesson(lIdx, cIdx);
     }
 
-    // 啟動初始化
+    // 啟動初始化（預設顯示首頁四大課別選擇大廳）
     refreshHeaderAndDino();
-    renderCharPills();
-    loadWriteChar(false);
+    renderHomeLessons();
+    document.getElementById("lesson-view").classList.add("hidden");
+    document.getElementById("home-view").classList.remove("hidden");
+    document.getElementById("header-sub-info").textContent = "第一課～第四課 (47字)";
   </script>
 </body>
 </html>
