@@ -386,9 +386,10 @@
         <div class="text-6xl mb-3">👑🎉🦖</div>
         <h3 class="text-2xl font-black text-amber-600">太神啦！本課聽寫大魔王全破！</h3>
         <p id="dict-complete-desc" class="text-sm text-slate-600 max-w-md mx-auto mt-2 mb-5 leading-relaxed"></p>
-        <div class="flex justify-center gap-3">
-          <button type="button" onclick="startDictationMode(true)" class="px-4 py-2.5 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm">🔄 再挑戰一次</button>
+        <div class="flex flex-wrap justify-center gap-3">
+          <button type="button" onclick="startDictationMode(true)" class="px-4 py-2.5 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm">🔄 本課再挑戰一次</button>
           <button type="button" onclick="goHome()" class="px-5 py-2.5 rounded-2xl bg-rose-500 text-white font-black text-sm shadow">🏝️ 返回選課大廳</button>
+          <button type="button" onclick="resetAllProgress()" class="px-4 py-2.5 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-black text-sm">🧹 全部重置重新開始</button>
         </div>
       </div>
     </section>
@@ -415,6 +416,12 @@
       </div>
       <p class="text-xs text-slate-500 mb-4">點擊任何一個生字，就能直接跳過去練習寫字喔！</p>
       <div id="stamp-book-body" class="space-y-4"></div>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+        <span id="all-done-badge" class="text-xs font-black text-emerald-600"></span>
+        <button type="button" onclick="resetAllProgress()" class="px-4 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-black text-xs sm:text-sm active:scale-95 transition">
+          🔄 重置全部紀錄（重新再來一次）
+        </button>
+      </div>
     </div>
   </div>
 
@@ -439,14 +446,14 @@
         desc: "認識方向與人物：拍、手、左、右、你、他、也、上、下",
         chars: [
           { ch: "拍", zy: "ㄆㄞ", rad: "手", strokes: 8, words: ["拍拍手", "拍球"], tip: "左窄右寬，「白」裡面的橫畫要靠左不碰右邊。", parts: ["扌", "白"], lookalikes: ["拍", "怕", "伯", "白"] },
-          { ch: "手", zy: "ㄕㄡˇ", rad: "手", strokes: 4, words: ["拍手", "小手"], tip: "第一筆是平撇，最後豎鉤在正中央。", parts: ["手", "毛"], lookalikes: ["手", "毛", "牛", "午"] },
+          { ch: "手", zy: "ㄕㄡˇ", rad: "手", strokes: 4, words: ["拍手", "小手"], tip: "第一筆是平撇，最後豎鉤在正中央。", parts: null, lookalikes: ["手", "毛", "牛", "午"] },
           { ch: "左", zy: "ㄗㄨㄛˇ", rad: "工", strokes: 5, words: ["左手", "左邊"], tip: "第一筆橫要長，下面「工」字要站穩。", parts: ["𠂇", "工"], lookalikes: ["左", "右", "在", "友"] },
           { ch: "右", zy: "ㄧㄡˋ", rad: "口", strokes: 5, words: ["右手", "右邊"], tip: "第一筆橫短、撇長，下面寫「口」。", parts: ["𠂇", "口"], lookalikes: ["右", "左", "石", "古"] },
           { ch: "你", zy: "ㄋㄧˇ", rad: "人", strokes: 7, words: ["你好", "你們"], tip: "左邊單人旁，右邊「尔」中間是豎鉤。", parts: ["亻", "尔"], lookalikes: ["你", "他", "們", "仔"] },
           { ch: "他", zy: "ㄊㄚ", rad: "人", strokes: 5, words: ["他們", "他的"], tip: "右邊「也」的豎彎鉤要圓潤有力。", parts: ["亻", "也"], lookalikes: ["他", "也", "地", "她"] },
-          { ch: "也", zy: "ㄧㄝˇ", rad: "乙", strokes: 3, words: ["也是", "也好"], tip: "第一筆橫折鉤斜度適中，豎彎鉤拉長。", parts: ["也", "乙"], lookalikes: ["也", "他", "地", "池"] },
-          { ch: "上", zy: "ㄕㄤˋ", rad: "一", strokes: 3, words: ["上面", "上下"], tip: "先寫豎，再寫短橫，最後底橫要平穩。", parts: ["上", "一"], lookalikes: ["上", "下", "止", "土"] },
-          { ch: "下", zy: "ㄒㄧㄚˋ", rad: "一", strokes: 3, words: ["下面", "下課"], tip: "長橫在上方，中間豎要直，右邊一點。", parts: ["一", "卜"], lookalikes: ["下", "上", "不", "卡"] }
+          { ch: "也", zy: "ㄧㄝˇ", rad: "乙", strokes: 3, words: ["也是", "也好"], tip: "第一筆橫折鉤斜度適中，豎彎鉤拉長。", parts: null, lookalikes: ["也", "他", "地", "池"] },
+          { ch: "上", zy: "ㄕㄤˋ", rad: "一", strokes: 3, words: ["上面", "上下"], tip: "先寫豎，再寫短橫，最後底橫要平穩。", parts: null, lookalikes: ["上", "下", "止", "土"] },
+          { ch: "下", zy: "ㄒㄧㄚˋ", rad: "一", strokes: 3, words: ["下面", "下課"], tip: "長橫在上方，中間豎要直，右邊一點。", parts: null, lookalikes: ["下", "上", "不", "卡"] }
         ]
       },
       {
@@ -459,11 +466,11 @@
           { ch: "是", zy: "ㄕˋ", rad: "日", strokes: 9, words: ["這是", "是的"], tip: "上面「日」寫扁一點，最後平捺要舒展。", parts: ["日", "疋"], lookalikes: ["是", "足", "走", "定"] },
           { ch: "誰", zy: "ㄕㄟˊ", rad: "言", strokes: 15, words: ["是誰", "誰的"], tip: "左邊言字旁，右邊「隹」四橫間距相等。", parts: ["言", "隹"], lookalikes: ["誰", "隻", "推", "難"] },
           { ch: "的", zy: "˙ㄉㄜ", rad: "白", strokes: 8, words: ["我的", "誰的"], tip: "左邊「白」寫小一點，右邊「勺」裡是一點。", parts: ["白", "勺"], lookalikes: ["的", "白", "拍", "句"] },
-          { ch: "我", zy: "ㄨㄛˇ", rad: "戈", strokes: 7, words: ["我們", "我的"], tip: "第五筆斜鉤要拉長，右上角一點別忘記。", parts: ["手", "戈"], lookalikes: ["我", "找", "成", "或"] },
+          { ch: "我", zy: "ㄨㄛˇ", rad: "戈", strokes: 7, words: ["我們", "我的"], tip: "第五筆斜鉤要拉長，右上角一點別忘記。", parts: null, lookalikes: ["我", "找", "成", "或"] },
           { ch: "個", zy: "˙ㄍㄜ", rad: "人", strokes: 10, words: ["一個", "個子"], tip: "左邊單人旁，右邊「固」外框要方正。", parts: ["亻", "固"], lookalikes: ["個", "們", "他", "做"] },
           { ch: "分", zy: "ㄈㄣ", rad: "刀", strokes: 4, words: ["分享", "分開"], tip: "上面「八」撇低捺高，下面「刀」要置中。", parts: ["八", "刀"], lookalikes: ["分", "公", "切", "份"] },
           { ch: "好", zy: "ㄏㄠˇ", rad: "女", strokes: 6, words: ["你好", "好朋友"], tip: "女字旁第三筆是提，右邊「子」橫畫要平。", parts: ["女", "子"], lookalikes: ["好", "子", "媽", "她"] },
-          { ch: "了", zy: "˙ㄌㄜ", rad: "亅", strokes: 2, words: ["好了", "來了"], tip: "第一筆橫撇，第二筆彎鉤要垂直。", parts: ["了", "亅"], lookalikes: ["了", "子", "才", "手"] },
+          { ch: "了", zy: "˙ㄌㄜ", rad: "亅", strokes: 2, words: ["好了", "來了"], tip: "第一筆橫撇，第二筆彎鉤要垂直。", parts: null, lookalikes: ["了", "子", "才", "手"] },
           { ch: "啊", zy: "˙ㄚ", rad: "口", strokes: 11, words: ["好啊", "是啊"], tip: "口字旁靠上，中間耳朵旁，右邊「可」。", parts: ["口", "阿"], lookalikes: ["啊", "阿", "河", "哥"] },
           { ch: "多", zy: "ㄉㄨㄛ", rad: "夕", strokes: 6, words: ["多少", "很多"], tip: "上下兩個「夕」要對齊，下面比上面稍大。", parts: ["夕", "夕"], lookalikes: ["多", "夕", "名", "外"] }
         ]
@@ -475,14 +482,14 @@
         desc: "好朋友一起玩：秋、千、和、玩、陪、高、山、到、大、海、朋、友、們、起",
         chars: [
           { ch: "秋", zy: "ㄑㄧㄡ", rad: "禾", strokes: 9, words: ["秋天", "秋千"], tip: "禾木旁最後一筆變點，右邊「火」撇捺舒展。", parts: ["禾", "火"], lookalikes: ["秋", "和", "伙", "種"] },
-          { ch: "千", zy: "ㄑㄧㄢ", rad: "十", strokes: 3, words: ["秋千", "千萬"], tip: "第一筆短平撇，第二筆橫要長，豎要直。", parts: ["丿", "十"], lookalikes: ["千", "十", "干", "午"] },
+          { ch: "千", zy: "ㄑㄧㄢ", rad: "十", strokes: 3, words: ["秋千", "千萬"], tip: "第一筆短平撇，第二筆橫要長，豎要直。", parts: null, lookalikes: ["千", "十", "干", "午"] },
           { ch: "和", zy: "ㄏㄜˊ", rad: "口", strokes: 8, words: ["和平", "和你"], tip: "左邊禾木旁，右邊「口」寫在中間偏下。", parts: ["禾", "口"], lookalikes: ["和", "秋", "知", "利"] },
           { ch: "玩", zy: "ㄨㄢˊ", rad: "玉", strokes: 8, words: ["好玩", "玩耍"], tip: "王字旁最後一筆變提，右邊「元」豎彎鉤要穩。", parts: ["王", "元"], lookalikes: ["玩", "完", "園", "元"] },
           { ch: "陪", zy: "ㄆㄟˊ", rad: "阜", strokes: 11, words: ["陪伴", "陪你"], tip: "左邊耳朵旁，右邊「立」與「口」上下對齊。", parts: ["阝", "咅"], lookalikes: ["陪", "部", "倍", "培"] },
           { ch: "高", zy: "ㄍㄠ", rad: "高", strokes: 10, words: ["高興", "高山"], tip: "點橫要平，上下兩個「口」要對齊。", parts: ["亠", "口"], lookalikes: ["高", "亮", "京", "亭"] },
-          { ch: "山", zy: "ㄕㄢ", rad: "山", strokes: 3, words: ["高山", "山上"], tip: "中間豎畫最高，左右兩豎向內微傾。", parts: ["山", "丨"], lookalikes: ["山", "出", "仙", "歲"] },
+          { ch: "山", zy: "ㄕㄢ", rad: "山", strokes: 3, words: ["高山", "山上"], tip: "中間豎畫最高，左右兩豎向內微傾。", parts: null, lookalikes: ["山", "出", "仙", "歲"] },
           { ch: "到", zy: "ㄉㄠˋ", rad: "刀", strokes: 8, words: ["來到", "看到"], tip: "「至」最後一橫變提，右邊立刀旁要直。", parts: ["至", "刂"], lookalikes: ["到", "倒", "室", "致"] },
-          { ch: "大", zy: "ㄉㄚˋ", rad: "大", strokes: 3, words: ["大人", "大個子"], tip: "橫畫平直，撇捺對稱打開。", parts: ["一", "人"], lookalikes: ["大", "太", "犬", "天"] },
+          { ch: "大", zy: "ㄉㄚˋ", rad: "大", strokes: 3, words: ["大人", "大個子"], tip: "橫畫平直，撇捺對稱打開。", parts: null, lookalikes: ["大", "太", "犬", "天"] },
           { ch: "海", zy: "ㄏㄞˇ", rad: "水", strokes: 10, words: ["大海", "海水"], tip: "課本標準 10 畫！三點水旁，右邊「每」裡頭兩點。", parts: ["氵", "每"], lookalikes: ["海", "每", "河", "梅"] },
           { ch: "朋", zy: "ㄆㄥˊ", rad: "月", strokes: 8, words: ["朋友", "好朋友"], tip: "左右兩個「月」並排，要寫得瘦長對稱。", parts: ["月", "月"], lookalikes: ["朋", "月", "明", "用"] },
           { ch: "友", zy: "ㄧㄡˇ", rad: "又", strokes: 4, words: ["朋友", "友好"], tip: "第一筆橫、第二筆撇要長，下面「又」撇捺舒展。", parts: ["𠂇", "又"], lookalikes: ["友", "左", "右", "有"] },
@@ -496,18 +503,18 @@
         title: "🐸 《大個子，小個子》",
         desc: "第四課生字：子、拉、蛙、小、看、開、課、找、心、兩、隻、人、青",
         chars: [
-          { ch: "子", zy: "ㄗˇ", rad: "子", strokes: 3, words: ["個子", "孩子"], tip: "橫撇、彎鉤要連貫，最後一橫寫在中間偏上。", parts: ["了", "一"], lookalikes: ["子", "了", "字", "好"] },
+          { ch: "子", zy: "ㄗˇ", rad: "子", strokes: 3, words: ["個子", "孩子"], tip: "橫撇、彎鉤要連貫，最後一橫寫在中間偏上。", parts: null, lookalikes: ["子", "了", "字", "好"] },
           { ch: "拉", zy: "ㄌㄚ", rad: "手", strokes: 8, words: ["拉手", "拉開"], tip: "左邊提手旁，右邊「立」的底橫要平穩。", parts: ["扌", "立"], lookalikes: ["拉", "立", "位", "泣"] },
           { ch: "蛙", zy: "ㄨㄚ", rad: "虫", strokes: 12, words: ["青蛙", "小蛙"], tip: "左邊虫字旁，右邊兩個「土」上下對齊。", parts: ["虫", "圭"], lookalikes: ["蛙", "娃", "佳", "掛"] },
-          { ch: "小", zy: "ㄒㄧㄠˇ", rad: "小", strokes: 3, words: ["大小", "小個子"], tip: "先寫中間豎鉤，再寫左點、右點，左右對稱。", parts: ["亅", "八"], lookalikes: ["小", "少", "水", "尖"] },
+          { ch: "小", zy: "ㄒㄧㄠˇ", rad: "小", strokes: 3, words: ["大小", "小個子"], tip: "先寫中間豎鉤，再寫左點、右點，左右對稱。", parts: null, lookalikes: ["小", "少", "水", "尖"] },
           { ch: "看", zy: "ㄎㄢˋ", rad: "目", strokes: 9, words: ["看見", "好看"], tip: "上面是「手」的變形，下面「目」要寫正。", parts: ["手", "目"], lookalikes: ["看", "著", "春", "目"] },
           { ch: "開", zy: "ㄎㄞ", rad: "門", strokes: 12, words: ["打開", "開心"], tip: "外面是「門」，裡面「开」兩橫要平、撇豎分明。", parts: ["門", "开"], lookalikes: ["開", "門", "們", "關"] },
           { ch: "課", zy: "ㄎㄜˋ", rad: "言", strokes: 15, words: ["上課", "下課"], tip: "左邊言字旁，右邊「果」要先寫「日」再寫「木」。", parts: ["言", "果"], lookalikes: ["課", "果", "顆", "棵"] },
           { ch: "找", zy: "ㄓㄠˇ", rad: "手", strokes: 7, words: ["找到", "尋找"], tip: "左邊提手旁，右邊「戈」斜鉤要拉長、右上角一點。", parts: ["扌", "戈"], lookalikes: ["找", "我", "拍", "劃"] },
-          { ch: "心", zy: "ㄒㄧㄣ", rad: "心", strokes: 4, words: ["開心", "小心"], tip: "臥鉤要圓潤，三點位置高低錯落。", parts: ["心", "丶"], lookalikes: ["心", "必", "思", "忘"] },
+          { ch: "心", zy: "ㄒㄧㄣ", rad: "心", strokes: 4, words: ["開心", "小心"], tip: "臥鉤要圓潤，三點位置高低錯落。", parts: null, lookalikes: ["心", "必", "思", "忘"] },
           { ch: "兩", zy: "ㄌㄧㄤˇ", rad: "入", strokes: 8, words: ["兩個", "兩隻"], tip: "外框方正，裡面左右各一個「入」字。", parts: ["冂", "入"], lookalikes: ["兩", "雨", "滿", "輛"] },
           { ch: "隻", zy: "ㄓ", rad: "隹", strokes: 10, words: ["一隻", "兩隻"], tip: "上面「隹」四橫要緊湊，下面「又」撇捺打開。", parts: ["隹", "又"], lookalikes: ["隻", "誰", "雙", "焦"] },
-          { ch: "人", zy: "ㄖㄣˊ", rad: "人", strokes: 2, words: ["大人", "人們"], tip: "撇高捺低，兩筆交接要自然穩固。", parts: ["丿", "㇏"], lookalikes: ["人", "入", "八", "大"] },
+          { ch: "人", zy: "ㄖㄣˊ", rad: "人", strokes: 2, words: ["大人", "人們"], tip: "撇高捺低，兩筆交接要自然穩固。", parts: null, lookalikes: ["人", "入", "八", "大"] },
           { ch: "青", zy: "ㄑㄧㄥ", rad: "青", strokes: 8, words: ["青草", "青蛙"], tip: "上半部三橫長短有別，下半部「月」第一筆寫成豎。", parts: ["龶", "月"], lookalikes: ["青", "清", "晴", "請"] }
         ]
       }
@@ -1047,10 +1054,54 @@
       const target = document.getElementById("hanzi-writer-target");
       target.innerHTML = "";
       try {
+      function fixTaiwanStrokeData(char, data) {
+        if (!data || !Array.isArray(data.strokes) || !Array.isArray(data.medians)) return data;
+        if (char === "這" && data.strokes.length === 10) {
+          const idx = 8;
+          const s = data.strokes[idx];
+          const m = data.medians[idx];
+          if (m && m.length >= 4) {
+            const splitPt = Math.floor(m.length / 2);
+            const m1 = m.slice(0, splitPt + 1);
+            const m2 = m.slice(splitPt);
+            data.strokes.splice(idx, 1, s, s);
+            data.medians.splice(idx, 1, m1, m2);
+          }
+        }
+        if (char === "陪" && data.strokes.length === 10) {
+          const s = data.strokes[0];
+          const m = data.medians[0];
+          if (m && m.length >= 4) {
+            const splitPt = Math.floor(m.length / 2);
+            const m1 = m.slice(0, splitPt + 1);
+            const m2 = m.slice(splitPt);
+            data.strokes.splice(0, 1, s, s);
+            data.medians.splice(0, 1, m1, m2);
+          }
+        }
+        if (char === "海" && data.strokes.length === 10) {
+          const topDotS = data.strokes[7], midHorS = data.strokes[8], botDotS = data.strokes[9];
+          const topDotM = data.medians[7], midHorM = data.medians[8], botDotM = data.medians[9];
+          data.strokes[7] = topDotS; data.medians[7] = topDotM;
+          data.strokes[8] = botDotS; data.medians[8] = botDotM;
+          data.strokes[9] = midHorS; data.medians[9] = midHorM;
+        }
+        return data;
+      }
+
+      function loadTaiwanCharData(char, onComplete) {
+        fetch("https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/" + encodeURIComponent(char) + ".json")
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            onComplete(fixTaiwanStrokeData(char, data));
+          })
+          .catch(function () {});
+      }
         writerInstance = HanziWriter.create("hanzi-writer-target", item.ch, {
           width: 268,
           height: 268,
           padding: 18,
+          charDataLoader: loadTaiwanCharData,
           showCharacter: false,
           showOutline: !isBlindMode,
           strokeColor: "#1e293b",
@@ -1139,7 +1190,8 @@
     // =========================================================
     function nextPuzzleQuestion() {
       const lesson = LESSONS_DATA[activeLessonIdx];
-      puzzleTarget = lesson.chars[Math.floor(Math.random() * lesson.chars.length)];
+      const validPool = lesson.chars.filter(function (c) { return Array.isArray(c.parts) && c.parts.length === 2; });
+      puzzleTarget = validPool[Math.floor(Math.random() * validPool.length)];
       puzzleSlots = [null, null];
 
       document.getElementById("pz-zhuyin").textContent = puzzleTarget.zy;
@@ -1150,8 +1202,8 @@
       renderPuzzleSlots();
 
       const distractors = [];
-      lesson.chars.forEach(function (c) {
-        if (c.ch !== puzzleTarget.ch) {
+      validPool.forEach(function (c) {
+        if (c.ch !== puzzleTarget.ch && Array.isArray(c.parts)) {
           c.parts.forEach(function (p) {
             if (puzzleTarget.parts.indexOf(p) === -1 && distractors.indexOf(p) === -1) distractors.push(p);
           });
@@ -1353,6 +1405,7 @@
           width: 268,
           height: 268,
           padding: 18,
+          charDataLoader: loadTaiwanCharData,
           showCharacter: false,
           showOutline: false,
           strokeColor: "#1e293b",
@@ -1453,7 +1506,38 @@
         }).join("");
         return '<div><h4 class="font-black text-sm text-slate-700 mb-2">' + lesson.title + '（' + lesson.chars.length + ' 字）</h4><div class="flex flex-wrap gap-1.5">' + cells + '</div></div>';
       }).join("");
+      const doneTotal = Object.keys(appState.writtenChars).length;
+      const badgeEl = document.getElementById("all-done-badge");
+      if (badgeEl) {
+        badgeEl.textContent = doneTotal >= 47
+          ? "🎉 太厲害了！全冊 47 個生字全部練習完成！"
+          : "目前進度：已完成 " + doneTotal + " / 47 字";
+      }
       document.getElementById("stamp-book-modal").classList.remove("hidden");
+    }
+
+    function resetAllProgress() {
+      playMagicSfx("tap");
+      if (!confirm("確定要清除全部練習紀錄與集章，重新開始嗎？")) return;
+      appState = {
+        stars: 0,
+        dinoLv: 1,
+        dinoXp: 0,
+        eggCount: 1,
+        maxDinoLv: 1,
+        writtenChars: {},
+        dictatedChars: {},
+        crownedLessons: {}
+      };
+      persist();
+      refreshHeaderAndDino();
+      document.getElementById("stamp-book-modal").classList.add("hidden");
+      activeLessonIdx = 0;
+      activeCharIdx = 0;
+      switchTab("write");
+      playMagicSfx("win");
+      speakSister("全部紀錄已經清除囉，我們重新開始冒險吧！");
+      showToast("🔄 已全部重置，重新開始練習！");
     }
 
     function jumpToChar(lIdx, cIdx) {
