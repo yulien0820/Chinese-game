@@ -603,24 +603,38 @@
     function unlockAudioHardware() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) return;
-        if (!audioCtx || audioCtx.state === "closed") audioCtx = new AC();
-
-        // iOS/iPadOS 需要在使用者操作當下實際啟動一個極短的 Web Audio source，
-        // 單純呼叫 resume() 有時不足以解鎖音效。
-        const buffer = audioCtx.createBuffer(1, 1, 22050);
-        const source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioCtx.destination);
-        source.start(0);
-
-        if (audioCtx.state === "suspended") {
-          const resumeResult = audioCtx.resume();
-          if (resumeResult && typeof resumeResult.catch === "function") {
-            resumeResult.catch(function () {});
+        if (AC) {
+          if (!audioCtx) audioCtx = new AC();
+          if (audioCtx.state === "suspended") {
+            audioCtx.resume();
           }
+          const buf = audioCtx.createBuffer(1, 1, 22050);
+          const src = audioCtx.createBufferSource();
+          src.buffer = buf;
+          src.connect(audioCtx.destination);
+          src.start(0);
         }
       } catch (e) {}
+
+      if (!mediaUnlocked) {
+        mediaUnlocked = true;
+        try {
+          const player = document.getElementById("tts-audio-player");
+          if (player) {
+            player.src = SILENT_WAV;
+            player.volume = 0.01;
+            const p = player.play();
+            if (p && typeof p.then === "function") {
+              p.then(function () {
+                player.pause();
+                player.volume = 1.0;
+              }).catch(function () {
+                player.volume = 1.0;
+              });
+            }
+          }
+        } catch (e) {}
+      }
     }
 
     ["touchstart", "pointerdown", "click"].forEach(function (evName) {
