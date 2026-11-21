@@ -1056,29 +1056,55 @@
       try {
       function fixTaiwanStrokeData(char, data) {
         if (!data || !Array.isArray(data.strokes) || !Array.isArray(data.medians)) return data;
+        // 1. 「這」：第 9、10 畫精準在 辶 中間左折頂點切分為「9 橫折」與「10 橫折撇」
         if (char === "這" && data.strokes.length === 10) {
           const idx = 8;
           const s = data.strokes[idx];
           const m = data.medians[idx];
-          if (m && m.length >= 4) {
-            const splitPt = Math.floor(m.length / 2);
-            const m1 = m.slice(0, splitPt + 1);
-            const m2 = m.slice(splitPt);
+          if (m && m.length >= 3) {
+            // 尋找第一折向右後、往左折返最深的頂點
+            let turnIdx = m.length >= 5 ? 2 : Math.floor(m.length / 2);
+            if (m.length >= 4) {
+              let maxRightIdx = 1;
+              for (let i = 1; i < m.length - 1; i++) {
+                if (m[i][0] > m[maxRightIdx][0]) maxRightIdx = i;
+              }
+              let minLeftIdx = maxRightIdx + 1;
+              for (let j = maxRightIdx + 1; j < m.length - 1; j++) {
+                if (m[j][0] <= m[minLeftIdx][0]) minLeftIdx = j;
+              }
+              turnIdx = Math.min(m.length - 2, Math.max(1, minLeftIdx));
+            }
+            const m1 = m.slice(0, turnIdx + 1);
+            const m2 = m.slice(turnIdx);
             data.strokes.splice(idx, 1, s, s);
             data.medians.splice(idx, 1, m1, m2);
           }
         }
+        // 2. 「陪」：左耳旁「阝」精準在中間內凹轉折點切分為「1 橫折」與「2 彎鉤」
         if (char === "陪" && data.strokes.length === 10) {
           const s = data.strokes[0];
           const m = data.medians[0];
-          if (m && m.length >= 4) {
-            const splitPt = Math.floor(m.length / 2);
-            const m1 = m.slice(0, splitPt + 1);
-            const m2 = m.slice(splitPt);
+          if (m && m.length >= 3) {
+            let turnIdx = Math.floor(m.length / 2);
+            if (m.length >= 4) {
+              let maxRightIdx = 1;
+              for (let i = 1; i < m.length - 1; i++) {
+                if (m[i][0] > m[maxRightIdx][0]) maxRightIdx = i;
+              }
+              let minLeftAfterIdx = maxRightIdx + 1;
+              for (let j = maxRightIdx + 1; j < m.length - 1; j++) {
+                if (m[j][0] <= m[minLeftAfterIdx][0]) minLeftAfterIdx = j;
+              }
+              turnIdx = Math.min(m.length - 2, Math.max(1, minLeftAfterIdx));
+            }
+            const m1 = m.slice(0, turnIdx + 1);
+            const m2 = m.slice(turnIdx);
             data.strokes.splice(0, 1, s, s);
             data.medians.splice(0, 1, m1, m2);
           }
         }
+        // 3. 「海」：右邊「每」先寫裡面兩點（8、9），最後第 10 畫才寫中間橫畫貫穿
         if (char === "海" && data.strokes.length === 10) {
           const topDotS = data.strokes[7], midHorS = data.strokes[8], botDotS = data.strokes[9];
           const topDotM = data.medians[7], midHorM = data.medians[8], botDotM = data.medians[9];
@@ -1109,6 +1135,7 @@
           highlightColor: "#f43f5e",
           drawingColor: "#3b82f6",
           drawingWidth: 18,
+          leniency: 1.55,
           showHintAfterMisses: 2
         });
         runWriterQuiz();
@@ -1412,6 +1439,7 @@
           highlightColor: "#f59e0b",
           drawingColor: "#3b82f6",
           drawingWidth: 18,
+          leniency: 1.55,
           showHintAfterMisses: 3
         });
         let dStrokes = 0;
