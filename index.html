@@ -1209,8 +1209,14 @@
           appState.stars += 1;
           persist();
           refreshHeaderAndDino();
-          speakSister("太棒了！拼出「" + puzzleTarget.ch + "」了！");
-          setTimeout(nextPuzzleQuestion, 1500);
+          let movedNext = false;
+          const goNextPuzzle = function () {
+            if (movedNext) return;
+            movedNext = true;
+            setTimeout(nextPuzzleQuestion, 300);
+          };
+          speakSister("太棒了！", 0.92, goNextPuzzle);
+          setTimeout(goNextPuzzle, 1800);
         } else {
           playMagicSfx("err");
           document.getElementById("pz-status").textContent = "❌ 好像不對喔，點擊框框清除再試一次！";
@@ -1373,7 +1379,7 @@
             document.getElementById("dict-earned").textContent = dictEarnedStars;
             document.getElementById("dict-revealed-char").textContent = item.ch;
             document.getElementById("dict-win-overlay").classList.remove("hidden");
-            speakSister("太神啦！你憑記憶寫出了「" + item.ch + "」，獲得兩顆星星！");
+            speakSister("太棒了，獲得2顆星星！");
           }
         });
       } catch (e) {}
